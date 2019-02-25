@@ -1,11 +1,11 @@
 <template>
   <div id="app">
-    <el-row :gutter="20">
-      <el-col :span="18"><h1>PreOrder</h1></el-col>
-      <el-col :span="6"><Login></Login></el-col>
+    <el-row :gutter="10">
+      <el-col class="hidden-xs-only" :sm="14" :md="16" :lg="20"><h1>P r e Order</h1></el-col>
+      <el-col :xs="24" :sm="10" :md="8" :lg="4"><Login></Login></el-col>
     </el-row>
     <el-row>
-      <el-col :span="12" :offset="6">
+      <el-col :xs="24" :md="{span: 12, offset: 6}">
         <OrderForm/>
       </el-col>
     </el-row>

@@ -1,9 +1,17 @@
 import Vue from 'vue'
 import App from './App.vue'
+
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import 'element-ui/lib/theme-chalk/display.css'
+import lang from 'element-ui/lib/locale/lang/en'
+import locale from 'element-ui/lib/locale'
+
 import firebase from 'firebase/app'
+import 'firebase/database'
 import 'firebase/auth'
+
+locale.use(lang)
 
 var config = {
   apiKey: 'AIzaSyAWnAZ0fkL7Tb7rd9m8SzYaSdjXp8hGau0',

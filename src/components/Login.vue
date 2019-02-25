@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="displayName">
+    <div v-if="displayName" style="text-align: right;">
       <User :displayName="displayName" :photoURL="photoURL"/>
       <el-button type="text" @click="signOut">Sign out</el-button>
     </div>
