@@ -1,18 +1,23 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <el-row :gutter="20">
+      <el-col :span="18"><h1>PreOrder</h1></el-col>
+      <el-col :span="6"><Login></Login></el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="12" :offset="6">
+        <OrderForm/>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import Login from './components/Login'
+import OrderForm from './components/OrderForm'
 export default {
   name: 'app',
-  components: {
-    HelloWorld
-  }
+  components: { Login, OrderForm }
 }
 </script>
 
@@ -21,8 +26,7 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 10px;
 }
 </style>
