@@ -6,7 +6,7 @@
     </el-row>
     <el-row>
       <el-col :xs="24" :md="{span: 12, offset: 6}">
-        <OrderForm/>
+        <router-view></router-view>
       </el-col>
     </el-row>
   </div>
@@ -14,10 +14,9 @@
 
 <script>
 import Login from './components/Login'
-import OrderForm from './components/OrderForm'
 export default {
   name: 'app',
-  components: { Login, OrderForm }
+  components: { Login }
 }
 </script>
 

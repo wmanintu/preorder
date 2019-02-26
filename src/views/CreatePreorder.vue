@@ -1,19 +1,15 @@
 <template>
   <el-card style="padding:15px;">
-
     <h1>CREATE MENU</h1>
-
     <el-row :gutter="15">
-      <el-col :xs="24" :sm="12"><el-input v-model="title" placeholder="What's the title of this menu?"/></el-col>
-      <el-col :xs="24" :sm="12"><el-date-picker v-model="endDate" type="datetime" placeholder="Select expire date"></el-date-picker></el-col>
+      <el-col :xs="24" :sm="12"><el-input v-model="form.title" placeholder="What's the title of this menu?"/></el-col>
+      <el-col :xs="24" :sm="12"><el-date-picker v-model="form.endDate" type="datetime" placeholder="Select expire date"></el-date-picker></el-col>
     </el-row>
-    
     <el-input class="menu-input" v-model="value" placeholder="What's on the menu?" @keyup.enter.native="addToOrders(value)">
       <el-button slot="append" icon="el-icon-plus" type="primary" @click="addToOrders(value)" round></el-button>
     </el-input>
-    
-    <div v-show="orders.length > 0">
-      <div v-for="(item, index) in orders" :key="item.id">
+    <div v-show="form.orders.length > 0">
+      <div v-for="(item, index) in form.orders" :key="item.id">
         <div class="item-container">
           <div class="item-text">{{item}}</div>
           <div class="item-button">
@@ -22,7 +18,6 @@
         </div>
       </div>
     </div>
-
     <div style="margin-top: 15px;">
       <el-col :span="12">
         <el-button>cancel</el-button>
@@ -31,31 +26,29 @@
         <el-button type="primary" @click="submitOrder">create</el-button>
       </el-col>
     </div>
-    
-    <pre>{{output}}</pre>
-
+    <br>
+    <pre>{{snapshot}}</pre>
   </el-card>
 </template>
 
 <script>
-import axios from 'axios'
-import { getCookie } from '../util/cookies'
-
+import { db } from '../firebase'
 export default {
   data () {
     return {
-      key: 'value',
-      orders: [],
       value: '',
-      title: '',
-      endDate: '',
-      output: ''
+      snapshot: null,
+      form: {
+        title: '',
+        endDate: '',
+        orders: []
+      }
     }
   },
   methods: {
     addToOrders (data) {
       if (data) {
-        this.orders.push(data)
+        this.form.orders.push(data)
         this.clearTextInput()
       }
     },
@@ -63,11 +56,41 @@ export default {
       this.value = ''
     },
     removeFromOrders (index) {
-      this.orders.splice(index, 1)
+      this.form.orders.splice(index, 1)
     },
-    submitOrder () {
-      let createOrderData = {}
-      firebase.database().ref('orders/order').key().set(createOrderData)
+    async submitOrder () {
+      let createOrderData = {
+        title: 'Dinner',
+        createdTime: '10:00 pm',
+        photoURL: 'https://graph.facebook.com/10154169314314322/picture',
+        createdBy: 'Wut Manintu',
+        expireTime: '11:00 pm',
+        menu: [
+          {
+            itemName: 'sandwish',
+            consumers: [
+              {
+                name: 'David',
+                quantity: 1
+              },
+              {
+                name: 'Susan',
+                quantity: 1
+              },
+              {
+                name: 'Wut Manintu',
+                quantity: 2
+              }
+            ]
+          }
+        ]
+      }
+      try {
+        let docRef = await db.collection('orders').add(createOrderData)
+        console.log('Document written with ID: ', docRef)
+      } catch (error) {
+        console.error('Error adding document: ', error)
+      }
     },
     handleCancel () {
       // TODO
