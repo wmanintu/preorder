@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import PreorderList from '@/views/PreorderList.vue'
-import CreatePreorder from '@/views/CreatePreorder.vue'
+import MenuList from '@/views/MenuList.vue'
+import CreateMenu from '@/views/CreateMenu.vue'
 
 Vue.use(Router)
 
@@ -9,13 +9,13 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'preorder-list',
-      component: PreorderList
+      name: 'menu-list',
+      component: MenuList
     },
     {
-      path: '/create-preorder',
-      name: 'create-preorder',
-      component: CreatePreorder
+      path: '/create-menu',
+      name: 'create-menu',
+      component: CreateMenu
     }
   ]
 })

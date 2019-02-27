@@ -21,7 +21,7 @@ export default {
   components: { User },
   created () {
     this.getFacebookRedirectResult()
-    var user = firebase.auth().currentUser
+    firebase.auth().currentUser
   },
   data() {
     return {
@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     signInWithRedirectFacebook () {
-      var provider = new firebase.auth.FacebookAuthProvider()
+      let provider = new firebase.auth.FacebookAuthProvider()
       firebase.auth().signInWithRedirect(provider)
     },
     async getFacebookRedirectResult () {
@@ -39,26 +39,27 @@ export default {
         let result = await firebase.auth().getRedirectResult()
         if (result.credential) {
           // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-          var token = result.credential.accessToken
+          let token = result.credential.accessToken
           setCookie('token', token)
         }
         // The signed-in user info.
         if (result.user) {
-          var user = result.user
+          let user = result.user
           setCookie('displayName', user.displayName)
           setCookie('photoURL', user.photoURL)
           this.displayName = user.displayName
           this.photoURL = user.photoURL
         }
       } catch (error) {
-        // Handle Errors here.
-        var errorCode = error.code
-        var errorMessage = error.message
-        // The email of the user's account used.
-        var email = error.email
-        // The firebase.auth.AuthCredential type that was used.
-        var credential = error.credential
-        // ...
+        console.log(error)
+        // // Handle Errors here.
+        // var errorCode = error.code
+        // var errorMessage = error.message
+        // // The email of the user's account used.
+        // var email = error.email
+        // // The firebase.auth.AuthCredential type that was used.
+        // var credential = error.credential
+        // // ...
       }
     },
     async signOut () {
@@ -66,7 +67,9 @@ export default {
         await firebase.auth().signOut()
         deleteAllCookies()
         window.location.reload()
-      } catch (error) {}
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }

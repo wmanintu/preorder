@@ -3,15 +3,18 @@
     <h1>CREATE MENU</h1>
     <el-row :gutter="15">
       <el-col :xs="24" :sm="12"><el-input v-model="form.title" placeholder="What's the title of this menu?"/></el-col>
-      <el-col :xs="24" :sm="12"><el-date-picker v-model="form.endDate" type="datetime" placeholder="Select expire date"></el-date-picker></el-col>
+      <el-col :xs="24" :sm="12">
+        <el-date-picker value-format="timestamp" v-model="form.expireTime" type="datetime" placeholder="Select expire date">
+        </el-date-picker>
+      </el-col>
     </el-row>
     <el-input class="menu-input" v-model="value" placeholder="What's on the menu?" @keyup.enter.native="addToOrders(value)">
       <el-button slot="append" icon="el-icon-plus" type="primary" @click="addToOrders(value)" round></el-button>
     </el-input>
-    <div v-show="form.orders.length > 0">
-      <div v-for="(item, index) in form.orders" :key="item.id">
+    <div v-show="form.items.length > 0">
+      <div v-for="(item, index) in form.items" :key="item.id">
         <div class="item-container">
-          <div class="item-text">{{item}}</div>
+          <div class="item-text">{{item.itemName}}</div>
           <div class="item-button">
             <el-button type="danger" icon="el-icon-close" @click="removeFromOrders(index)" circle></el-button>
           </div>
@@ -20,19 +23,19 @@
     </div>
     <div style="margin-top: 15px;">
       <el-col :span="12">
-        <el-button>cancel</el-button>
+        <el-button @click="handleCancel">cancel</el-button>
       </el-col>
       <el-col :span="12" style="text-align: right;">
-        <el-button type="primary" @click="submitOrder">create</el-button>
+        <el-button type="primary" @click="handleCreate">create</el-button>
       </el-col>
     </div>
     <br>
-    <pre>{{snapshot}}</pre>
   </el-card>
 </template>
 
 <script>
-import { db } from '../firebase'
+import { mapActions } from 'vuex'
+import firebase from 'firebase'
 export default {
   data () {
     return {
@@ -40,15 +43,22 @@ export default {
       snapshot: null,
       form: {
         title: '',
-        endDate: '',
-        orders: []
+        uid: '',
+        createBy: '',
+        photoUrl: '',
+        createTime: '',
+        expireTime: '',
+        items: []
       }
     }
   },
   methods: {
-    addToOrders (data) {
-      if (data) {
-        this.form.orders.push(data)
+    ...mapActions({
+      createMenu: 'Menus/createMenu'
+    }),
+    addToOrders (name) {
+      if (name) {
+        this.form.items.push({ itemName: name, consumers: [] })
         this.clearTextInput()
       }
     },
@@ -58,36 +68,17 @@ export default {
     removeFromOrders (index) {
       this.form.orders.splice(index, 1)
     },
-    async submitOrder () {
-      let createOrderData = {
-        title: 'Dinner',
-        createdTime: '10:00 pm',
-        photoURL: 'https://graph.facebook.com/10154169314314322/picture',
-        createdBy: 'Wut Manintu',
-        expireTime: '11:00 pm',
-        menu: [
-          {
-            itemName: 'sandwish',
-            consumers: [
-              {
-                name: 'David',
-                quantity: 1
-              },
-              {
-                name: 'Susan',
-                quantity: 1
-              },
-              {
-                name: 'Wut Manintu',
-                quantity: 2
-              }
-            ]
-          }
-        ]
-      }
+    async handleCreate () {
+      let user = firebase.auth().currentUser
+      this.form.createTime = Date.now()
+      this.form.createBy = user.displayName
+      this.form.photoUrl = user.photoURL
+
       try {
-        let docRef = await db.collection('orders').add(createOrderData)
-        console.log('Document written with ID: ', docRef)
+        console.log('c', this.form)
+        let docRef = await this.createMenu(this.form)
+        console.log('Document written with ID: ', docRef.id)
+        this.$router.push({ name: 'menu-list' })
       } catch (error) {
         console.error('Error adding document: ', error)
       }
@@ -95,7 +86,7 @@ export default {
     handleCancel () {
       // TODO
       // clear form
-      // return to order list
+      this.$router.push({ name: 'menu-list' })
     }
   }
 }
