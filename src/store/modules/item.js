@@ -16,43 +16,13 @@ const getters = {
 
 // actions
 const actions = {
-  async fetchItems ({ commit }, menuId) {
-    try {
-      let querySnapshot = await itemApi.getItems(menuId)
-      if (querySnapshot.empty) {
-        commit('setItems', [])
-      } else {
-        let items = []
-        querySnapshot.forEach(doc => {
-          items.push({
-            id: doc.id,
-            data: doc.data()
-          })
-        })
-        commit('setItems', items)
-      }
-    } catch (error) {
-      commit('setItems', [])
-    }
-  },
   setItemsListener ({ commit }, menuId) {
-    db.collection('items').where('menu_id', '==', menuId).onSnapshot(snapshot => {
-      snapshot.docChanges().forEach((change) => {
-        let data = {id: change.doc.id, data: change.doc.data()}
-        switch (change.type) {
-          case 'added':
-            commit('addedItem', data)
-            break
-          case 'modified':
-            console.log("Modified: ", change.doc.data())
-            commit('modifiedItem', data)
-            break
-          case 'removed':
-            console.log("Removed: ", change.doc.data())
-            commit('removedItem', data)
-            break
-        }
+    db.collection('items').where('menu_id', '==', menuId).orderBy('item_name', 'asc').onSnapshot(snapshot => {
+      let items = []
+      snapshot.forEach(doc => {
+        items.push({ id: doc.id, data: doc.data() })
       })
+      commit('setItems', items)
     }, (error) => {
       console.log(error)
     })

@@ -26,25 +26,9 @@ const getters = {
 
 // actions
 const actions = {
-  async fetchMenus ({ commit }) {
-    try {
-      let querySnapshot = await menuApi.getMenus()
-      if (querySnapshot.empty) {
-        commit('setMenus', [])
-      } else {
-        let menus = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          data: doc.data()
-        }))
-        commit('setMenus', menus)
-      }
-    } catch (error) {
-      commit('setMenus', [])
-    }
-  },
   async createMenu ({ commit }, data) {
     try {
-      data.timestamp = Date.now()
+      data.timestamp = new Date()
       let payload = {}
       payload = Object.assign(payload, data)
       let docRef = await menuApi.createMenu(payload)
@@ -54,53 +38,31 @@ const actions = {
     }
   },
   setMenusListener ({ commit }) {
-    db.collection('menus').onSnapshot(snapshot => {
-      snapshot.docChanges().forEach((change) => {
-        let data = {id: change.doc.id, data: change.doc.data()}
-        switch (change.type) {
-          case 'added':
-            commit('addedMenu', data)
-            break
-          case 'modified':
-            commit('modifiedMenu', data)
-            break
-          case 'removed':
-            commit('removedMenu', data)
-            break
-        }
+    db.collection('menus').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+      let menus = []
+      snapshot.forEach(doc => {
+        menus.push({ id: doc.id, data: doc.data() })
       })
+      commit('setMenus', menus)
     }, (error) => {
-      return error
+      console.log(error)
     })
   },
   removeMenusListener () {
     var unsubscribe = db.collection('menus').onSnapshot(function () {})
     unsubscribe()
   },
-  async fetchMenu ({ commit }, menuId) {
-    try {
-      let querySnapshot = await menuApi.getMenu(menuId)
-      if (querySnapshot.empty) {
-        commit('setMenu', {})
-      } else {
-        let menu = { id: querySnapshot.id, data: querySnapshot.data() }
-        commit('setMenu', menu)
-      }
-    } catch (error) {
-      commit('setMenu', {})
-    }
-  },
   setMenuListener ({ commit }, menuId) {
     db.collection('menus').doc(menuId).onSnapshot({
       includeMetadataChanges: true
     }, (doc) => {
-      // commit('setMenu', { id: doc.id, data: doc.data() })
+      commit('setMenu', { id: doc.id, data: doc.data() })
     })
   },
   removeMenuListener ({ commit }, menuId) {
     var unsubscribe = db.collection('menus').doc(menuId).onSnapshot(function () {})
     unsubscribe()
-  },
+  }
 }
 
 // mutations

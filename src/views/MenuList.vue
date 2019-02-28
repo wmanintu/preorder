@@ -1,6 +1,8 @@
 <template>
   <div>
-    <el-button icon="el-icon-plus" @click="redirect('menu-form')" circle/>
+    <div style="text-align: right; margin-bottom: 10px;">
+      <el-button icon="el-icon-plus" @click="redirect('menu-form')" circle/>
+    </div>
     <div class="card" v-for="(menu, index) in menus" :key="index" @click="goToItemList(menus[index].id)">
       <Menu :menu="menu"/>
     </div>
@@ -9,12 +11,10 @@
 
 <script>
 import Menu from '../components/Menu'
-import MenuDetail from '../components/MenuDetail'
 import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
-    Menu,
-    MenuDetail
+    Menu
   },
   data () {
     return {
@@ -24,49 +24,25 @@ export default {
   },
   computed: {
     ...mapGetters({
-      menus: 'Menus/getMenus',
-      menuIndex: 'Menus/getMenuIndex'
+      menus: 'Menus/getMenus'
     }),
   },
   created () {
     this.setMenusListener()
-    this.fetchMenus()
   },
   beforeDestroy () {
     this.removeMenusListener()
   },
   methods: {
     ...mapActions({
-      fetchMenus: 'Menus/fetchMenus',
       setMenusListener: 'Menus/setMenusListener',
-      removeMenusListener: 'Menus/removeMenusListener',
-      fetchItems: 'Items/fetchItems',
-      createItem: 'Items/createItem'
+      removeMenusListener: 'Menus/removeMenusListener'
     }),
     goToItemList (menuId) {
       this.$router.push({ name: 'item-list', params: { menuId: menuId } })
     },
     redirect (routeName) {
       this.$router.push({ name: routeName })
-    },
-    async handleAddInput () {
-      this.isDisable = true
-      if (this.inputItem && this.isDisable) {
-        let payload = {
-          menu_id: this.menus[this.menuIndex].id,
-          consumers: [],
-          item_name: this.inputItem
-        }
-        try {
-          let docRef = await this.createItem(payload)
-          this.inputItem = ''
-          this.$message.success('added')
-          this.isDisable = false
-        } catch (error) {
-          this.$message.error('add fail')
-          this.isDisable = false
-        }
-      }
     }
   }
 }
@@ -81,10 +57,9 @@ export default {
   -webkit-transition: .3s;
   transition: .3s;
   border-radius: 4px;
-  overflow: hidden;
 }
 .card:hover {
   cursor: pointer;
-  background-color: grey;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.6);
 }
 </style>

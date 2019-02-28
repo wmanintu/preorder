@@ -1,26 +1,34 @@
 <template>
   <div>
     <el-button icon="el-icon-arrow-left" @click="backMainMenu"></el-button>
-    <!-- <pre>{{menus[menuIndex]}}</pre>
-    <pre>{{items}}</pre> -->
-    <!-- <p><strong>menu id</strong>  {{menus[menuIndex].id}}</p> -->
     <Menu :menu="menu"/>
     <el-input :disabled="isDisable" placeholder="Please input" v-model="inputItem" @keyup.enter.native="handleAddInput" clearable>
       <el-button :disabled="isDisable" slot="append" icon="el-icon-plus" @click.stop="handleAddInput"></el-button>
     </el-input>
-    <MenuDetail :items="items"/>
+    <div v-for="(item, index) in items" :key="index">
+      <el-col>
+        <el-col :span="12">
+          <Item :item="item"/>
+        </el-col>
+        <el-col :span="12">
+          <AmountInput/>
+        </el-col>
+      </el-col>
+    </div>
   </div>
 </template>
 
 <script>
 import Menu from '../components/Menu'
-import MenuDetail from '../components/MenuDetail'
+import Item from '../components/Item'
+import AmountInput from '../components/AmountInput'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     Menu,
-    MenuDetail
+    Item,
+    AmountInput
   },
   props: [ 'menuId' ],
   data () {
@@ -39,8 +47,6 @@ export default {
   created () {
     this.setMenuListener(this.menuId)
     this.setItemsListener(this.menuId)
-    this.fetchMenu(this.menuId)
-    this.fetchItems(this.menuId)
   },
   beforeDestroy () {
     this.removeMenuListener(this.menuId)
@@ -48,10 +54,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      fetchMenu: 'Menus/fetchMenu',
       setMenuListener: 'Menus/setMenuListener',
       removeMenuListener: 'Menus/removeMenuListener',
-      fetchItems: 'Items/fetchItems',
       createItem: 'Items/createItem',
       setItemsListener: 'Items/setItemsListener',
       removeItemsListener: 'Items/removeItemsListener',
@@ -67,11 +71,11 @@ export default {
       if (this.inputItem && this.isDisable) {
         let payload = {
           menu_id: this.menu.id,
-          consumers: [],
+          consumers: {},
           item_name: this.inputItem
         }
         try {
-          let docRef = await this.createItem(payload)
+          await this.createItem(payload)
           this.inputItem = ''
           this.$message.success('added')
           this.isDisable = false

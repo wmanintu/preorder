@@ -1,8 +1,11 @@
 <template>
   <div>
-    <el-button icon="el-icon-arrow-left" @click="redirectTo('menu-list')"></el-button>
+    <div style="margin-bottom: 10px;">
+      <el-button icon="el-icon-arrow-left" @click="redirectTo('menu-list')"></el-button>
+    </div>
+    
     <h1>Create Menu</h1>
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
       <el-form-item label="Title" prop="name">
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
