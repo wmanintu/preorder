@@ -1,9 +1,14 @@
 <template>
   <div>
-    <el-button icon="el-icon-plus" @click="redirect('menu-form')" circle/>
-    <div class="card" v-for="(menu, index) in menus" :key="index" @click="goToItemList(menus[index].id)">
-      <Menu :menu="menu"/>
-    </div>
+    <el-button icon="el-icon-arrow-left" @click="backMainMenu"></el-button>
+    <!-- <pre>{{menus[menuIndex]}}</pre>
+    <pre>{{items}}</pre> -->
+    <!-- <p><strong>menu id</strong>  {{menus[menuIndex].id}}</p> -->
+    <Menu :menu="menu"/>
+    <el-input :disabled="isDisable" placeholder="Please input" v-model="inputItem" @keyup.enter.native="handleAddInput" clearable>
+      <el-button :disabled="isDisable" slot="append" icon="el-icon-plus" @click.stop="handleAddInput"></el-button>
+    </el-input>
+    <MenuDetail :items="items"/>
   </div>
 </template>
 
@@ -11,11 +16,13 @@
 import Menu from '../components/Menu'
 import MenuDetail from '../components/MenuDetail'
 import { mapGetters, mapActions } from 'vuex'
+
 export default {
   components: {
     Menu,
     MenuDetail
   },
+  props: [ 'menuId' ],
   data () {
     return {
       inputItem: '',
@@ -24,27 +31,33 @@ export default {
   },
   computed: {
     ...mapGetters({
-      menus: 'Menus/getMenus',
-      menuIndex: 'Menus/getMenuIndex'
+      menu: 'Menus/getMenu',
+      menuIndex: 'Menus/getMenuIndex',
+      items: 'Items/getItems'
     }),
   },
   created () {
-    this.setMenusListener()
-    this.fetchMenus()
+    this.setMenuListener(this.menuId)
+    this.setItemsListener(this.menuId)
+    this.fetchMenu(this.menuId)
+    this.fetchItems(this.menuId)
   },
   beforeDestroy () {
-    this.removeMenusListener()
+    this.removeMenuListener()
+    this.removeItemsListener()
   },
   methods: {
     ...mapActions({
-      fetchMenus: 'Menus/fetchMenus',
-      setMenusListener: 'Menus/setMenusListener',
-      removeMenusListener: 'Menus/removeMenusListener',
+      fetchMenu: 'Menus/fetchMenu',
+      setMenuListener: 'Menus/setMenuListener',
+      removeMenuListener: 'Menus/removeMenuListener',
       fetchItems: 'Items/fetchItems',
-      createItem: 'Items/createItem'
+      createItem: 'Items/createItem',
+      setItemsListener: 'Items/setItemsListener',
+      removeItemsListener: 'Items/removeItemsListener',
     }),
-    goToItemList (menuId) {
-      this.$router.push({ name: 'item-list', params: { menuId: menuId } })
+    backMainMenu () {
+      this.$router.push({ name: 'menu-list' })
     },
     redirect (routeName) {
       this.$router.push({ name: routeName })
@@ -53,7 +66,7 @@ export default {
       this.isDisable = true
       if (this.inputItem && this.isDisable) {
         let payload = {
-          menu_id: this.menus[this.menuIndex].id,
+          menu_id: this.menu.id,
           consumers: [],
           item_name: this.inputItem
         }

@@ -4,8 +4,14 @@ import { db } from '../../firebase'
 
 // initial state
 const state = {
-  menuIndex: null,
-  menus: []
+  menus: [],
+  menu: {
+    id: '',
+    data: {
+      name: '',
+      desc: ''
+    }
+  }
 }
 
 // getters
@@ -13,8 +19,8 @@ const getters = {
   getMenus (state) {
     return state.menus
   },
-  getMenuIndex (state) {
-    return state.menuIndex
+  getMenu (state) {
+    return state.menu
   }
 }
 
@@ -71,18 +77,37 @@ const actions = {
     var unsubscribe = db.collection('menus').onSnapshot(function () {})
     unsubscribe()
   },
-  assignMenuIndex ({ commit }, index) {
-    commit('setMenuIndex', index)
-  }
+  async fetchMenu ({ commit }, menuId) {
+    try {
+      let querySnapshot = await menuApi.getMenu(menuId)
+      if (querySnapshot.empty) {
+        commit('setMenu', {})
+      } else {
+        let menu = { id: querySnapshot.id, data: querySnapshot.data() }
+        console.log('menu', menu)
+        commit('setMenu', menu)
+      }
+    } catch (error) {
+      commit('setMenu', {})
+    }
+  },
+  setMenuListener ({ commit }, menuId) {
+    db.collection('menus').doc(menuId).onSnapshot({
+      includeMetadataChanges: true
+    }, (doc) => {
+      commit('setMenus', { id: doc.id, data: doc.data() })
+    })
+  },
+  removeMenuListener (menuId) {
+    var unsubscribe = db.collection('menus').doc(menuId).onSnapshot(function () {})
+    unsubscribe()
+  },
 }
 
 // mutations
 const mutations = {
   setMenus (state, menus) {
     state.menus = menus
-  },
-  setMenuIndex (state, index) {
-    state.menuIndex = index
   },
   addedMenu (state, newMenu) {
     state.menus.unshift(newMenu)
@@ -94,6 +119,9 @@ const mutations = {
   removedMenu (state, menuId) {
     let index = state.menus.findIndex(element => element.id === menuId)
     state.menus.splice(index, 1)
+  },
+  setMenu (state, menu) {
+    state.menu = menu
   }
 }
 

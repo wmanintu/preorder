@@ -35,8 +35,8 @@ const actions = {
       commit('setItems', [])
     }
   },
-  setItemsListener ({ commit }) {
-    db.collection('items').onSnapshot(snapshot => {
+  setItemsListener ({ commit }, menuId) {
+    db.collection('items').where('menu_id', '==', menuId).onSnapshot(snapshot => {
       snapshot.docChanges().forEach((change) => {
         let data = {id: change.doc.id, data: change.doc.data()}
         switch (change.type) {

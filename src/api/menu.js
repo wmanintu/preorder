@@ -16,5 +16,13 @@ export default {
     } catch (error) {
       return error
     }
+  },
+  async getMenu (menuId) {
+    try {
+      let querySnapshot = await db.collection('menus').doc(menuId).get()
+      return querySnapshot
+    } catch (error) {
+      return error
+    }
   }
 }
