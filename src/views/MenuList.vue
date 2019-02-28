@@ -1,37 +1,31 @@
 <template>
   <div>
     <div v-if="mainMenu">
-      <el-button type="primary" @click="goToCreate">Create</el-button>
-      <div class="card" v-for="(menu, index) in menus" :key="index" @click="handleClickMenu(index)">
-        <div>
-          <h1>{{menu.data.title}}</h1>
-          <img class="creater-image" :src="menu.data.photoURL"/>
-          <p></p>
-        </div>
-      </div>
+      <Menu :menus="menus" @setSelectIndex="setSelectIndex"/>
     </div>
     <div v-else>
       <el-button type="primary" @click="backMainMenu">back</el-button>
       <pre>{{menus[selectIndex]}}</pre>
-      <h1>{{menus[selectIndex].data.title}}</h1>
-      <div v-for="(item, index) in menus[selectIndex].data.items" :key="index">
-        <el-col>
-          {{item.itemName}}
-          <el-input-number
-            v-model="item.quantity"
-            @change="handleChange"
-            :min="0"
-            :max="10"
-            ></el-input-number>
-        </el-col>
+      <pre>{{items}}</pre>
+      <p><strong>menu id</strong>  {{menus[selectIndex].id}}<p>
+      <h1>{{menus[selectIndex].data.name}}</h1>
+      <div v-for="(item, iIndex) in items" :key="iIndex">
+        {{item.data.item_name}}
+        <div v-for="(consumer, cIndex) in item.data.consumers" :key="cIndex">
+          {{consumer}}
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import Menu from '../components/Menu'
 import { mapGetters, mapActions } from 'vuex'
 export default {
+  components: {
+    Menu
+  },
   data () {
     return {
       selectIndex: null,
@@ -41,7 +35,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      menus: 'Menus/getMenus'
+      menus: 'Menus/getMenus',
+      items: 'Items/getItems'
     }),
   },
   created () {
@@ -55,11 +50,9 @@ export default {
     ...mapActions({
       fetchMenus: 'Menus/fetchMenus',
       setMenusListener: 'Menus/setMenusListener',
-      removeMenusListener: 'Menus/removeMenusListener'
+      removeMenusListener: 'Menus/removeMenusListener',
+      fetchItems: 'Items/fetchItems'
     }),
-    goToCreate () {
-      this.$router.push({ name: 'create-menu' })
-    },
     handleChange(value) {
       console.log(value)
       if (value > 0) {
@@ -68,8 +61,9 @@ export default {
         // remove from consumers
       }
     },
-    handleClickMenu (preorderIndex) {
-      this.selectIndex = preorderIndex
+    setSelectIndex (index) {
+      this.fetchItems(this.menus[index].id)
+      this.selectIndex = index
       this.mainMenu = false
     },
     backMainMenu () {

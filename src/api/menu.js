@@ -3,19 +3,8 @@ import { db } from '../firebase'
 export default {
   async getMenus () {
     try {
-      console.log('a')
-      // let doc = await db.collection('menus')
-      // .doc('5khnP2auhuAqxjgiPtxf')
-      // .get()
-      // console.log('doc =>', doc.data)
-      let doc = await db.collection('menus')
-      .doc('5khnP2auhuAqxjgiPtxf')
-      .collection('items')
-      .doc('5khnP2auhuAqxjgiPtxf')
-      .get()
-      console.log('doc =>', doc.data)
-      let querySnapshot = await db.collection('menus').get()
-      return querySnapshot
+      let querySnapshots = await db.collection('menus').get()
+      return querySnapshots
     } catch (error) {
       return error
     }
@@ -27,5 +16,5 @@ export default {
     } catch (error) {
       return error
     }
-  },
+  }
 }

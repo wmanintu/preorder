@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import menuAPI from '../../api/menu'
+import menuApi from '../../api/menu'
 import { db } from '../../firebase'
 
 // initial state
@@ -18,11 +18,14 @@ const getters = {
 const actions = {
   async fetchMenus ({ commit }) {
     try {
-      let querySnapshot = await menuAPI.getMenus()
+      let querySnapshot = await menuApi.getMenus()
       if (querySnapshot.empty) {
         commit('setMenus', [])
       } else {
-        let menus = querySnapshot.docs.map(doc => ({id: doc.id, data: doc.data()}))
+        let menus = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          data: doc.data()
+        }))
         commit('setMenus', menus)
       }
     } catch (error) {
@@ -31,50 +34,30 @@ const actions = {
   },
   async createMenu ({ commit }, data) {
     try {
-      let docRef = await menuAPI.createOrder(data)
+      let docRef = await menuApi.createOrder(data)
       return docRef
     } catch (error) {
       return error
     }
   },
-  async addItemQuantity (orderId) {
-    let sfDocRef = db.collection('menus').doc(orderId)
-    try {
-      let result = db.runTransaction(async (transaction) => {
-        let sfDoc = await transaction.get(sfDocRef)
-
-        if (!sfDoc.exists) { throw "Document does not exist!" }
-
-        let newPopulation = sfDoc.data().population + 1
-        if (newPopulation <= 1000000) {
-            transaction.update(sfDocRef, { population: newPopulation })
-            return newPopulation
-        } else {
-            return Promise.reject("Sorry! Population is too big.")
-        }
-      })
-      console.log(result)
-    } catch (error) {
-      console.log(error)
-    }
-  },
-  setMenusListener () {
+  setMenusListener ({ commit }) {
     db.collection('menus').onSnapshot(snapshot => {
       snapshot.docChanges().forEach((change) => {
+        let data = {id: change.doc.id, data: change.doc.data()}
         switch (change.type) {
-          case 'add':
-            console.log("Add: ", change.doc.data())
+          case 'added':
+            commit('addedMenu', data)
             break
           case 'modified':
-            console.log("Modified: ", change.doc.data())
+            commit('modifiedMenu', data)
             break
           case 'removed':
-            console.log("Removed: ", change.doc.data())
+            commit('removedMenu', data)
             break
         }
       })
     }, (error) => {
-      console.log(error)
+      return error
     })
   },
   removeMenusListener () {
@@ -87,6 +70,17 @@ const actions = {
 const mutations = {
   setMenus (state, menus) {
     state.menus = menus
+  },
+  addedMenu (state, newMenu) {
+    state.menus.unshift(newMenu)
+  },
+  modifiedMenu (state, newMenu) {
+    let index = state.menus.findIndex(element => element.id === newMenu.id)
+    state.menus[index] = Object.assign(state.menus[index], newMenu)
+  },
+  removedMenu (state, menuId) {
+    let index = state.menus.findIndex(element => element.id === menuId)
+    state.menus.splice(index, 1)
   }
 }
 
