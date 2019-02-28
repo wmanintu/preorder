@@ -7,7 +7,7 @@
       <el-col :xs="24" :sm="10" :md="8" :lg="4"><Login></Login></el-col>
     </el-row>
     <el-row>
-      <el-col :xs="24" :md="{span: 12, offset: 6}">
+      <el-col :xs="24" :sm="{span: 14, offset: 5}" :md="{span: 12, offset: 6}">
         <router-view></router-view>
       </el-col>
     </el-row>

@@ -4,6 +4,7 @@ import { db } from '../../firebase'
 
 // initial state
 const state = {
+  menuIndex: null,
   menus: []
 }
 
@@ -11,6 +12,9 @@ const state = {
 const getters = {
   getMenus (state) {
     return state.menus
+  },
+  getMenuIndex (state) {
+    return state.menuIndex
   }
 }
 
@@ -34,7 +38,10 @@ const actions = {
   },
   async createMenu ({ commit }, data) {
     try {
-      let docRef = await menuApi.createOrder(data)
+      data.timestamp = Date.now()
+      let payload = {}
+      payload = Object.assign(payload, data)
+      let docRef = await menuApi.createMenu(payload)
       return docRef
     } catch (error) {
       return error
@@ -63,6 +70,9 @@ const actions = {
   removeMenusListener () {
     var unsubscribe = db.collection('menus').onSnapshot(function () {})
     unsubscribe()
+  },
+  assignMenuIndex ({ commit }, index) {
+    commit('setMenuIndex', index)
   }
 }
 
@@ -70,6 +80,9 @@ const actions = {
 const mutations = {
   setMenus (state, menus) {
     state.menus = menus
+  },
+  setMenuIndex (state, index) {
+    state.menuIndex = index
   },
   addedMenu (state, newMenu) {
     state.menus.unshift(newMenu)

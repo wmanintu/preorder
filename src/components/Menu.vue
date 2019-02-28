@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div class="card" v-for="(menu, index) in menus" :key="index" @click="handleClickMenu(index)">
+    <div class="card" v-for="(menu, index) in menus" :key="index" @click.stop="handleClickMenu(index)">
       <div>
         <h1>{{menu.data.name}}</h1>
         <img class="creater-image" :src="menu.data.photoURL"/>
-        <p></p>
+        <p>{{menu.data.desc}}</p>
       </div>
     </div>
   </div>
@@ -14,8 +14,8 @@
 export default {
   props: [ 'menus' ],
   methods: {
-    handleClick (index) {
-      this.$emit('setSelectIndex', index)
+    handleClickMenu (index) {
+      this.$emit('setCurMenuIndex', index)
     }
   }
 }
