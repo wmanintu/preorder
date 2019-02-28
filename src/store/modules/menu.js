@@ -84,7 +84,6 @@ const actions = {
         commit('setMenu', {})
       } else {
         let menu = { id: querySnapshot.id, data: querySnapshot.data() }
-        console.log('menu', menu)
         commit('setMenu', menu)
       }
     } catch (error) {
@@ -95,10 +94,10 @@ const actions = {
     db.collection('menus').doc(menuId).onSnapshot({
       includeMetadataChanges: true
     }, (doc) => {
-      commit('setMenus', { id: doc.id, data: doc.data() })
+      // commit('setMenu', { id: doc.id, data: doc.data() })
     })
   },
-  removeMenuListener (menuId) {
+  removeMenuListener ({ commit }, menuId) {
     var unsubscribe = db.collection('menus').doc(menuId).onSnapshot(function () {})
     unsubscribe()
   },

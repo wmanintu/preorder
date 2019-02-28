@@ -43,8 +43,8 @@ export default {
     this.fetchItems(this.menuId)
   },
   beforeDestroy () {
-    this.removeMenuListener()
-    this.removeItemsListener()
+    this.removeMenuListener(this.menuId)
+    this.removeItemsListener(this.menuId)
   },
   methods: {
     ...mapActions({
