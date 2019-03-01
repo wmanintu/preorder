@@ -1,14 +1,23 @@
 <template>
   <div class="input-container">
-    <el-button icon="el-icon-minus" circle></el-button>
+    <el-button @click="handleAmountInput('substract')" icon="el-icon-minus" circle></el-button>
     <div class="amount-text">0</div>
-    <el-button class="" icon="el-icon-plus" circle></el-button>
+    <el-button @click="handleAmountInput('add')" icon="el-icon-plus" circle></el-button>
   </div>
 </template>
 
 <script>
 export default {
-  props: [ 'item' ]
+  props: [ 'item', 'index' ],
+  methods: {
+    handleAmountInput (type) {
+      this.$emit('handleAmountInput', {
+        type: type,
+        id: this.item.id,
+        index: this.index
+      })
+    }
+  }
 }
 </script>
 

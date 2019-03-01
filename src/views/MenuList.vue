@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="text-align: right; margin-bottom: 10px;">
-      <el-button icon="el-icon-plus" @click="redirect('menu-form')" circle/>
+      <el-button type="primary" icon="el-icon-plus" @click="redirect('menu-form')" circle/>
     </div>
     <div class="card" v-for="(menu, index) in menus" :key="index" @click="goToItemList(menus[index].id)">
       <Menu :menu="menu"/>

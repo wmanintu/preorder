@@ -11,7 +11,7 @@
           <Item :item="item"/>
         </el-col>
         <el-col :span="12">
-          <AmountInput/>
+          <AmountInput @handleAmountInput="handleAmountInput" :item="item" :index="index"/>
         </el-col>
       </el-col>
     </div>
@@ -47,10 +47,12 @@ export default {
   created () {
     this.setMenuListener(this.menuId)
     this.setItemsListener(this.menuId)
+    this.setConsumersListener(this.menuId)
   },
   beforeDestroy () {
     this.removeMenuListener(this.menuId)
     this.removeItemsListener(this.menuId)
+    this.removeConsumersListener(this.menuId)
   },
   methods: {
     ...mapActions({
@@ -59,12 +61,40 @@ export default {
       createItem: 'Items/createItem',
       setItemsListener: 'Items/setItemsListener',
       removeItemsListener: 'Items/removeItemsListener',
+      updateItemQuantity: 'Items/updateItemQuantity',
+      setConsumersListener: 'Items/setConsumersListener',
+      removeConsumersListener: 'Items/removeConsumersListener'
     }),
     backMainMenu () {
       this.$router.push({ name: 'menu-list' })
     },
     redirect (routeName) {
       this.$router.push({ name: routeName })
+    },
+    handleAmountInput (data) {
+      switch (data.type) {
+        case 'add':
+          this.updateItemQuantity({
+            itemId: data.index,
+            itemIndex: data.id,
+            amount: 1
+          })
+          break
+        case 'subtract':
+          this.updateItemQuantity({
+            itemId: data.index,
+            itemIndex: data.id,
+            amount: 1
+          })
+          break
+        default:
+          this.updateItemQuantity({
+            itemId: data.index,
+            itemIndex: data.id,
+            amount: 1
+          })
+          break
+      }
     },
     async handleAddInput () {
       this.isDisable = true

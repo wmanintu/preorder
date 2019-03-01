@@ -16,12 +16,26 @@
 import firebase from 'firebase'
 import { getCookie, setCookie, deleteAllCookies } from '../util/cookies.js'
 import User from './User'
+import { mapActions } from 'vuex'
 
 export default {
   components: { User },
   created () {
     this.getFacebookRedirectResult()
-    firebase.auth().currentUser
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        // this.assignUser({
+        //   id: user.id,
+        //   displayName: user.displayName,
+        //   photoUrl: user.photoUrl
+        // })
+        console.log('User is signed in.', user.displayName)
+      } else {
+        console.log('No user is signed in.')
+      }
+    })
+    let user = firebase.auth().currentUser
+    console.log('user', user)
   },
   data() {
     return {
@@ -30,6 +44,12 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      assignUser: 'Users/assignUser'
+    }),
+    setUser (user) {
+      this.assignUser(user)
+    },
     signInWithRedirectFacebook () {
       let provider = new firebase.auth.FacebookAuthProvider()
       firebase.auth().signInWithRedirect(provider)
