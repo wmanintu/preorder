@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import itemApi from '../../api/item'
-import { db } from '../../firebase'
+import { db, auth, itemsCollection, consumersCollection } from '../../config/firebase'
 
 // initial state
 const state = {
@@ -21,7 +21,7 @@ const getters = {
 // actions
 const actions = {
   setItemsListener ({ commit }, menuId) {
-    db.collection('items').where('menu_id', '==', menuId).orderBy('item_name', 'asc').onSnapshot(snapshot => {
+    itemsCollection.where('menu_id', '==', menuId).orderBy('item_name', 'asc').onSnapshot(snapshot => {
       let items = []
       snapshot.forEach(doc => {
         items.push({ id: doc.id, data: doc.data() })
@@ -32,7 +32,7 @@ const actions = {
     })
   },
   setConsumersListener ({ commit }, menuId) {
-    db.collection('consumers').where('menu_id', '==', menuId).onSnapshot(snapshot => {
+    consumersCollection.where('menu_id', '==', menuId).onSnapshot(snapshot => {
       let consumers = []
       snapshot.forEach(doc => {
         consumers.push({ id: doc.id, data: doc.data() })
@@ -43,11 +43,11 @@ const actions = {
     })
   },
   removeItemsListener () {
-    var unsubscribe = db.collection('items').onSnapshot(function () {})
+    var unsubscribe = itemsCollection.onSnapshot(function () {})
     unsubscribe()
   },
   removeConsumersListener () {
-    var unsubscribe = db.collection('consumers').onSnapshot(function () {})
+    var unsubscribe = consumersCollection.onSnapshot(function () {})
     unsubscribe()
   },
   async createItem ({ commit }, data) {
@@ -65,11 +65,10 @@ const actions = {
   async updateItemQuantity ({ state }, data) {
     // (itemId, itemIndex)
     console.log('call updateItemQuantity', data)
-    console.log(db)
-    let user = db.auth().currentUser
+    let user = auth.currentUser
     console.log('user', user)
-    let itemDocRef = db.collection('items').doc(itemId)
-    let consumersColRef = db.collection('items')
+    let itemDocRef = itemsCollection.doc(itemId)
+    let consumersColRef = itemsCollection
     let itemId = data.itemId
     let itemIndex = data.itemIndex
     let userId = user.uid
@@ -118,7 +117,7 @@ const actions = {
         consumers: db.firestore.FieldValue.arrayUnion(userId)
       })
       // add new consumer of an item
-      let consumersDocRef = db.collection('consumers')
+      let consumersDocRef = consumersCollection
       batch.set(consumersDocRef, {
         item_id: itemId,
         amount: 1,

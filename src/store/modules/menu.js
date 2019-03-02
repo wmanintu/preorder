@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import menuApi from '../../api/menu'
-import { db } from '../../firebase'
+import { menusCollection } from '../../config/firebase'
 
 // initial state
 const state = {
@@ -38,7 +38,7 @@ const actions = {
     }
   },
   setMenusListener ({ commit }) {
-    db.collection('menus').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+    menusCollection.orderBy('timestamp', 'desc').onSnapshot(snapshot => {
       let menus = []
       snapshot.forEach(doc => {
         menus.push({ id: doc.id, data: doc.data() })
@@ -49,18 +49,18 @@ const actions = {
     })
   },
   removeMenusListener () {
-    var unsubscribe = db.collection('menus').onSnapshot(function () {})
+    var unsubscribe = menusCollection.onSnapshot(function () {})
     unsubscribe()
   },
   setMenuListener ({ commit }, menuId) {
-    db.collection('menus').doc(menuId).onSnapshot({
+    menusCollection.doc(menuId).onSnapshot({
       includeMetadataChanges: true
     }, (doc) => {
       commit('setMenu', { id: doc.id, data: doc.data() })
     })
   },
   removeMenuListener ({ commit }, menuId) {
-    var unsubscribe = db.collection('menus').doc(menuId).onSnapshot(function () {})
+    var unsubscribe = menusCollection.doc(menuId).onSnapshot(function () {})
     unsubscribe()
   }
 }

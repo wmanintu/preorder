@@ -1,9 +1,9 @@
-import { db } from '../firebase'
+import { menusCollection } from '../config/firebase'
 
 export default {
   async getMenus () {
     try {
-      let querySnapshots = await db.collection('menus').get()
+      let querySnapshots = await menusCollection.get()
       return querySnapshots
     } catch (error) {
       return error
@@ -11,7 +11,7 @@ export default {
   },
   async createMenu (data) {
     try {
-      let docRef = await db.collection('menus').add(data)
+      let docRef = await menusCollection.add(data)
       return docRef
     } catch (error) {
       return error
@@ -19,7 +19,7 @@ export default {
   },
   async getMenu (menuId) {
     try {
-      let querySnapshot = await db.collection('menus').doc(menuId).get()
+      let querySnapshot = await menusCollection.doc(menuId).get()
       return querySnapshot
     } catch (error) {
       return error

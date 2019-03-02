@@ -1,10 +1,10 @@
-import { db } from '../firebase'
+import { consumersCollection } from '../config/firebase'
 
 export default {
   async addConsumer (data) {
     // params: (userId, itemId)
     try {
-      let docRef = await db.collection('consumers').add(data)
+      let docRef = await consumersCollection.add(data)
       return docRef
     } catch (error) {
       return error

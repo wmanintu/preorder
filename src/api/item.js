@@ -1,9 +1,9 @@
-import { db } from '../firebase'
+import { itemsCollection } from '../config/firebase'
 
 export default {
   async getItems (menuId) {
     try {
-      let querySnapshot = await db.collection('items').where('menu_id', '==', menuId).get()
+      let querySnapshot = await itemsCollection.where('menu_id', '==', menuId).get()
       return querySnapshot
     } catch (error) {
       return error
@@ -11,7 +11,7 @@ export default {
   },
   async createItem (payload) {
     try {
-      let docRef = await db.collection('items').add(payload)
+      let docRef = await itemsCollection.add(payload)
       return docRef
     } catch (error) {
       return error
@@ -19,7 +19,7 @@ export default {
   },
   async deleteItem (itemId) {
     try {
-      let docRef = await db.collection('menus').doc(itemId).delete()
+      let docRef = await itemsCollection.doc(itemId).delete()
       return docRef
     } catch (error) {
       return error

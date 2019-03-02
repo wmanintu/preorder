@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Login from './views/Login'
-import MenuList from './views/MenuList'
-import MenuForm from './views/MenuForm'
-import ItemList from './views/ItemList'
-import NotFound from './views/NotFound'
+import Login from '../views/Login'
+import MenuList from '../views/MenuList'
+import MenuForm from '../views/MenuForm'
+import ItemList from '../views/ItemList'
+import NotFound from '../views/NotFound'
 
 Vue.use(Router)
 

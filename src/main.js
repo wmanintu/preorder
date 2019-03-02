@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
-import router from './router'
+import router from './config/router'
 import store from './store'
 
 import {
@@ -13,13 +13,12 @@ import {
   Row,
   Col,
   Loading,
-  Message,
+  Message
 } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/display.css'
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
-
 locale.use(lang)
 
 Vue.use(Input)
