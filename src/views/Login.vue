@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-button type="primary" @click="handleSignInFacebook" :loading="userLoading">
+    <el-button type="primary" @click.prevent="handleSignInFacebook" :loading="userLoading">
       <i class="fab fa-facebook"></i> Sign in with Facebook
     </el-button>
   </div>
@@ -15,14 +15,15 @@ export default {
       userLoading: 'Users/getLoading'
     })
   },
-  created () {
-    firebase.auth().getRedirectResult().then(function(result) {
+  async created () {
+    try {
+      let result = await firebase.auth().getRedirectResult()
       if (result.credential) {
-        this.$router({ name: 'menu-list' })
+        this.$router.push({ name: 'menu-list' })
       }
-    }).catch(function(error) {
+    } catch (error) {
       this.$message.error(error.message)
-    })
+    }
   },
   methods: {
     handleSignInFacebook () {

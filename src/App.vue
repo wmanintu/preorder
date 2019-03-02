@@ -7,7 +7,7 @@
       <el-col :xs="24" :sm="10" :md="8" :lg="4">
         <div v-if="user" style="text-align: right;">
           <User :displayName="user.displayName" :photoUrl="user.photoUrl"/>
-          <el-button type="text" @click="handleSignOut" :loading="isSignOut">Sign out</el-button>
+          <el-button type="text" @click.prevent="handleSignOut">Sign out</el-button>
         </div>
       </el-col>
     </el-row>
@@ -22,6 +22,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import firebase from 'firebase'
+import { db } from 'firebase'
 import User from './components/User'
 export default {
   name: 'app',
@@ -30,11 +31,6 @@ export default {
     ...mapGetters({
       user: 'Users/getUser'
     })
-  },
-  data () {
-    return {
-      isSignOut: false
-    }
   },
   async created () {
     this.setUserLoading(true)
@@ -51,29 +47,28 @@ export default {
         this.setUserLoading(false)
       } else {
         this.setUserLoading(false)
-        this.$router.push({ name: 'login' })
+        setTimeout(() => {
+          this.$router.push({ name: 'login' })
+          }, 3000)
       }
     })
   },
   methods: {
     ...mapActions({
-      signOut: 'Users/signOut',
       setUser: 'Users/setUser',
-      setUserLoading: 'Users/setLoading',
-      onAuthStateChanged: 'Users/onAuthStateChanged'
+      setUserLoading: 'Users/setLoading'
     }),
-    async handleSignOut ({ commit }) {
-      if (!this.isSignOut) {
-        this.isSignOut = true
-        try {
-          await firebase.auth().signOut()
-          this.setUser(null)
-          this.isSignOut = false
-          this.$router.push({ name: 'login' })
-        } catch (error) {
-          this.isSignOut = false
-          this.$message.error('signout error')
-        }
+    async handleSignOut () {
+      try {
+        this.setUser(null)
+        var unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
+          // handle it
+        })
+        unsubscribe()
+        await firebase.auth().signOut()
+        window.location.href = '/'
+      } catch (error) {
+        this.$message.error('signout error')
       }
     }
   }
