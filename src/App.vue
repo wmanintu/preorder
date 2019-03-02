@@ -22,7 +22,6 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import firebase from 'firebase'
-import { db } from 'firebase'
 import User from './components/User'
 export default {
   name: 'app',
@@ -47,9 +46,7 @@ export default {
         this.setUserLoading(false)
       } else {
         this.setUserLoading(false)
-        setTimeout(() => {
-          this.$router.push({ name: 'login' })
-          }, 3000)
+        this.$router.push({ name: 'login' })
       }
     })
   },
@@ -61,12 +58,12 @@ export default {
     async handleSignOut () {
       try {
         this.setUser(null)
-        var unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
-          // handle it
-        })
-        unsubscribe()
+        // var unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
+        //   // handle it
+        // })
+        // unsubscribe()
         await firebase.auth().signOut()
-        window.location.href = '/'
+        this.$router.push({ name: 'login' })
       } catch (error) {
         this.$message.error('signout error')
       }

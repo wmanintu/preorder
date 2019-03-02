@@ -18,7 +18,8 @@ export default {
   async created () {
     try {
       let result = await firebase.auth().getRedirectResult()
-      if (result.credential) {
+      let user = firebase.auth().currentUser
+      if (result.credential && user) {
         this.$router.push({ name: 'menu-list' })
       }
     } catch (error) {
