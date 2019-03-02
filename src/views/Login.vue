@@ -1,13 +1,13 @@
 <template>
   <div>
-    <el-button type="primary" @click="signInFacebook" :loading="userLoading">
+    <el-button type="primary" @click="handleSignInFacebook" :loading="userLoading">
       <i class="fab fa-facebook"></i> Sign in with Facebook
     </el-button>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 import firebase from 'firebase'
 export default {
   computed: {
@@ -25,9 +25,10 @@ export default {
     })
   },
   methods: {
-    ...mapActions({
-      signInFacebook: 'Users/signInFacebook'
-    })
+    handleSignInFacebook () {
+      let provider = new firebase.auth.FacebookAuthProvider()
+      firebase.auth().signInWithRedirect(provider)
+    }
   }
 }
 </script>

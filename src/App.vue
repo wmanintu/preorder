@@ -62,11 +62,12 @@ export default {
       setUserLoading: 'Users/setLoading',
       onAuthStateChanged: 'Users/onAuthStateChanged'
     }),
-    async handleSignOut () {
+    async handleSignOut ({ commit }) {
       if (!this.isSignOut) {
         this.isSignOut = true
         try {
-          await this.signOut()
+          await firebase.auth().signOut()
+          this.setUser(null)
           this.isSignOut = false
           this.$router.push({ name: 'login' })
         } catch (error) {

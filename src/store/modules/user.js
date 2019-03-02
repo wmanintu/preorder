@@ -1,6 +1,3 @@
-// import { db } from '../../firebase'
-import firebase from 'firebase'
-
 // initial state
 const state = {
   user: null,
@@ -21,19 +18,6 @@ const getters = {
 const actions = {
   setUser ({ commit }, user) {
     commit('setUser', user)
-  },
-  signInFacebook () {
-    let provider = new firebase.auth.FacebookAuthProvider()
-    firebase.auth().signInWithRedirect(provider)
-  },
-  async signOut ({ commit }) {
-    try {
-      await firebase.auth().signOut()
-      commit('setUser', null)
-      return
-    } catch (error) {
-      return error
-    }
   },
   setLoading ({ commit }, flag) {
     commit('setLoading', flag)
