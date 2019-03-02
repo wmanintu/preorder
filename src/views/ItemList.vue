@@ -41,7 +41,8 @@ export default {
     ...mapGetters({
       menu: 'Menus/getMenu',
       menuIndex: 'Menus/getMenuIndex',
-      items: 'Items/getItems'
+      items: 'Items/getItems',
+      user: 'Items/getUser'
     }),
   },
   created () {

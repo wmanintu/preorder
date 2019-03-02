@@ -1,13 +1,13 @@
 <template>
   <div class="user-container">
-    <img class="user-image" :src="photoURL">
+    <img class="user-image" :src="photoUrl">
     <h4 class="user-name"><b>{{displayName}}</b></h4>
   </div>
 </template>
 
 <script>
   export default {
-    props: [ 'displayName', 'photoURL' ]
+    props: [ 'displayName', 'photoUrl' ]
   }
 </script>
 
