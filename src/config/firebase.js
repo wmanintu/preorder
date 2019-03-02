@@ -16,6 +16,7 @@ firebase.initializeApp(config)
 // firebase utils
 const db = firebase.firestore()
 const auth = firebase.auth()
+const authProvider = firebase.auth
 const currentUser = auth.currentUser
 
 // firebase collections
@@ -26,6 +27,7 @@ const menusCollection = db.collection('menus')
 export {
   db,
   auth,
+  authProvider,
   currentUser,
   consumersCollection,
   itemsCollection,

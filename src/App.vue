@@ -21,7 +21,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { auth } from './config/firebase'
+import { auth, menusCollection } from './config/firebase'
 import User from './components/User'
 export default {
   name: 'app',
@@ -57,6 +57,8 @@ export default {
     }),
     async handleSignOut () {
       try {
+        var unsubscribe = menusCollection.onSnapshot(function () {})
+        unsubscribe()
         this.setUser(null)
         await auth.signOut()
         this.$router.push({ name: 'login' })

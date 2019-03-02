@@ -11,7 +11,9 @@ const state = {
       name: '',
       desc: ''
     }
-  }
+  },
+  unsubMenuOne: null,
+  unsubMenuTwo: null
 }
 
 // getters
@@ -38,7 +40,7 @@ const actions = {
     }
   },
   setMenusListener ({ commit }) {
-    menusCollection.orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+    let unsubMenuOne = menusCollection.orderBy('timestamp', 'desc').onSnapshot(snapshot => {
       let menus = []
       snapshot.forEach(doc => {
         menus.push({ id: doc.id, data: doc.data() })
@@ -47,17 +49,21 @@ const actions = {
     }, (error) => {
       console.log(error)
     })
+    commit('setUnsubMenuOne', unsubMenuOne)
   },
-  removeMenusListener () {
-    var unsubscribe = menusCollection.onSnapshot(function () {})
-    unsubscribe()
+  unsubMenusListenerOne ({ state }) {
+    state.unsubMenuOne()
+  },
+  unsubMenusListenerTwo ({ state }) {
+    state.unsubMenuTwo()
   },
   setMenuListener ({ commit }, menuId) {
-    menusCollection.doc(menuId).onSnapshot({
+    let unsubMenuTwo = menusCollection.doc(menuId).onSnapshot({
       includeMetadataChanges: true
     }, (doc) => {
       commit('setMenu', { id: doc.id, data: doc.data() })
     })
+    commit('setUnsubMenuTwo', unsubMenuTwo)
   },
   removeMenuListener ({ commit }, menuId) {
     var unsubscribe = menusCollection.doc(menuId).onSnapshot(function () {})
@@ -83,6 +89,12 @@ const mutations = {
   },
   setMenu (state, menu) {
     state.menu = menu
+  },
+  setUnsubMenuOne(state, data) {
+    state.unsubMenuOne = data
+  },
+  setUnsubMenuTwo(state, data) {
+    state.unsubMenuTwo = data
   }
 }
 

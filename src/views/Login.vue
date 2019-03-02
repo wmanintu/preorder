@@ -10,7 +10,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { auth } from '../config/firebase'
+import { auth, authProvider } from '../config/firebase'
 export default {
   computed: {
     ...mapGetters({
@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     handleSignInFacebook () {
-      let provider = new auth.FacebookAuthProvider()
+      let provider = new authProvider.FacebookAuthProvider()
       auth.signInWithRedirect(provider)
     }
   }
