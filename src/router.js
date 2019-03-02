@@ -4,6 +4,7 @@ import Login from './views/Login'
 import MenuList from './views/MenuList'
 import MenuForm from './views/MenuForm'
 import ItemList from './views/ItemList'
+import NotFound from './views/NotFound'
 
 Vue.use(Router)
 
@@ -33,8 +34,8 @@ export default new Router({
     },
     {
       path: '*',
-      name: 'login',
-      component: Login
+      name: 'not-found',
+      component: NotFound
     }
   ]
 })

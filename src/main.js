@@ -3,7 +3,18 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-import ElementUI from 'element-ui'
+import {
+  Input,
+  Button,
+  Form,
+  FormItem,
+  Tabs,
+  Icon,
+  Row,
+  Col,
+  Loading,
+  Message,
+} from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/display.css'
 import lang from 'element-ui/lib/locale/lang/en'
@@ -11,7 +22,19 @@ import locale from 'element-ui/lib/locale'
 
 locale.use(lang)
 
-Vue.use(ElementUI)
+Vue.use(Input)
+Vue.use(Form)
+Vue.use(FormItem)
+Vue.use(Tabs)
+Vue.use(Icon)
+Vue.use(Row)
+Vue.use(Col)
+Vue.use(Button)
+
+Vue.use(Loading.directive)
+Vue.prototype.$loading = Loading.service
+Vue.prototype.$message = Message
+
 Vue.config.productionTip = false
 
 new Vue({
