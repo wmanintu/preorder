@@ -37,8 +37,6 @@ export default {
     }
   },
   async created () {
-    let routeName = await this.onAuthStateChanged()
-    this.$router.push({ name: routeName })
     this.setUserLoading(true)
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -47,7 +45,9 @@ export default {
           displayName: user.displayName,
           photoUrl: user.photoURL
         })
-        this.$router.push({ name: 'menu-list' })
+        if(this.$route.name === 'login') {
+          this.$router.push({ name: 'menu-list' })
+        }
         this.setUserLoading(false)
       } else {
         this.setUserLoading(false)

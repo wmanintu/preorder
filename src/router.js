@@ -30,6 +30,11 @@ export default new Router({
       path: '/menu-form',
       name: 'menu-form',
       component: MenuForm
+    },
+    {
+      path: '*',
+      name: 'login',
+      component: Login
     }
   ]
 })

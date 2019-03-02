@@ -35,20 +35,6 @@ const actions = {
       return error
     }
   },
-  onAuthStateChanged ({ commit }) {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        commit('setUser', {
-          id: user.uid,
-          displayName: user.displayName,
-          photoUrl: user.photoURL
-        })
-        return 'menu-list'
-      } else {
-        return 'login'
-      }
-    })
-  },
   setLoading ({ commit }, flag) {
     commit('setLoading', flag)
   }
