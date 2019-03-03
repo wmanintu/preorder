@@ -1,20 +1,27 @@
 <template>
   <div class="input-container">
-    <el-button @click="handleAmountInput('substract')" icon="el-icon-minus" circle></el-button>
-    <div class="amount-text">0</div>
+    <el-button :disabled="item.amountInput === 0" @click="handleAmountInput('minus')" icon="el-icon-minus" circle></el-button>
+    <div class="amount-text">{{item.amountInput}}</div>
     <el-button @click="handleAmountInput('add')" icon="el-icon-plus" circle></el-button>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
+
   props: [ 'item', 'index' ],
   methods: {
+    ...mapActions({
+      updateItemQuantity: 'Items/updateItemQuantity'
+    }),
     handleAmountInput (type) {
-      this.$emit('handleAmountInput', {
-        type: type,
-        id: this.item.id,
-        index: this.index
+      this.updateItemQuantity({
+        itemId: this.item.id,
+        itemAmount: this.item.amountInput,
+        menuId: this.item.data.menu_id,
+        itemIndex: this.index,
+        type: type
       })
     }
   }

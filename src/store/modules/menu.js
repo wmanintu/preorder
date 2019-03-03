@@ -51,10 +51,10 @@ const actions = {
     })
     commit('setUnsubMenuOne', unsubMenuOne)
   },
-  unsubMenusListenerOne ({ state }) {
+  unsubMenusListener ({ state }) {
     state.unsubMenuOne()
   },
-  unsubMenusListenerTwo ({ state }) {
+  unsubMenuListener ({ state }) {
     state.unsubMenuTwo()
   },
   setMenuListener ({ commit }, menuId) {

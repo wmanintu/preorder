@@ -31,12 +31,12 @@ export default {
     this.setMenusListener()
   },
   beforeDestroy () {
-    this.unsubMenusListenerOne()
+    this.unsubMenusListener()
   },
   methods: {
     ...mapActions({
       setMenusListener: 'Menus/setMenusListener',
-      unsubMenusListenerOne: 'Menus/unsubMenusListenerOne'
+      unsubMenusListener: 'Menus/unsubMenusListener'
     }),
     goToItemList (menuId) {
       this.$router.push({ name: 'item-list', params: { menuId: menuId } })

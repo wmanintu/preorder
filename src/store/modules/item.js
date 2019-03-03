@@ -5,50 +5,45 @@ import { db, auth, itemsCollection, consumersCollection } from '../../config/fir
 // initial state
 const state = {
   items: [],
-  consumers: []
+  unsubItems: null
 }
 
 // getters
 const getters = {
   getItems (state) {
     return state.items
-  },
-  getConsumers (state) {
-    return state.consumers
   }
 }
 
 // actions
 const actions = {
   setItemsListener ({ commit }, menuId) {
-    itemsCollection.where('menu_id', '==', menuId).orderBy('item_name', 'asc').onSnapshot(snapshot => {
+    let unsubItems = itemsCollection.where('menu_id', '==', menuId)
+    .orderBy('item_name', 'asc').onSnapshot(async snapshot => {
       let items = []
-      snapshot.forEach(doc => {
-        items.push({ id: doc.id, data: doc.data() })
+      let consumers = []
+
+      snapshot.forEach(doc => { items.push({ id: doc.id, data: doc.data() }) })
+      let consumerQuery = await consumersCollection.where('menu_id', '==', menuId).get()
+      consumerQuery.forEach(doc => { consumers.push({consumerId: doc.id, data: doc.data()})})
+      items.map(item => {
+        let match = consumers.find(consumer => consumer.data.item_id === item.id)
+        item.consumers = []
+        item.amountInput = 0
+
+        if (match) {
+          item.consumers.push(match)
+          item.amountInput = match.data.amount
+        }
       })
       commit('setItems', items)
     }, (error) => {
       console.log(error)
     })
+    commit('setUnsubItems', unsubItems)
   },
-  setConsumersListener ({ commit }, menuId) {
-    consumersCollection.where('menu_id', '==', menuId).onSnapshot(snapshot => {
-      let consumers = []
-      snapshot.forEach(doc => {
-        consumers.push({ id: doc.id, data: doc.data() })
-      })
-      commit('setConsumers', consumers)
-    }, (error) => {
-      console.log(error)
-    })
-  },
-  removeItemsListener () {
-    var unsubscribe = itemsCollection.onSnapshot(function () {})
-    unsubscribe()
-  },
-  removeConsumersListener () {
-    var unsubscribe = consumersCollection.onSnapshot(function () {})
-    unsubscribe()
+  unsubItemsListener ({ state }) {
+    state.unsubItems()
   },
   async createItem ({ commit }, data) {
     try {
@@ -66,37 +61,45 @@ const actions = {
     // (itemId, itemIndex)
     console.log('call updateItemQuantity', data)
     let user = auth.currentUser
-    console.log('user', user)
-    let itemDocRef = itemsCollection.doc(itemId)
-    let consumersColRef = itemsCollection
     let itemId = data.itemId
     let itemIndex = data.itemIndex
-    let userId = user.uid
-    let userDisplayName = user.displayName
     let amount = data.amount
     let menuId = data.menuId
-    let currentItemConsumers = state.items[itemIndex].data.consumer
-    if (currentItemConsumers > 0) {
+    let userId = user.uid
+    let type = data.type
+    let currentItemConsumers = state.items[itemIndex].data.consumers
+    let userDisplayName = user.displayName
+    
+    if (currentItemConsumers.length > 0) {
       // has consumer
+      console.log('Item with consumers')
       try {
-        db.runTranscation(async (tx) => {
-          let itemDoc = await tx.get(itemDocRef)
+        await db.runTransaction(async tx => {
+          let itemDoc = await tx.get(itemsCollection.doc(itemId))
           // find my user id in itemDocument
           if (itemDoc.data().consumers.find(element => element === userId)) {
             // Old consumer
-            let consumersDoc = await tx.get(consumersColRef)
-            let consumerDoc = await consumersDoc.where('item_id', '==', itemId).where('user_id', '==', userId)
+            let querySnapshot = await consumersCollection
+            .where('item_id', '==', itemId)
+            .where('user_id', '==', userId)
+            .get()
+            let consumerDoc = null
+            querySnapshot.forEach(doc => {
+              console.log('doc', doc)
+              consumerDoc = doc.ref
+            })
+            console.log('consumerdoc', consumerDoc)
             await tx.update(consumerDoc, {
-              quantity: amount
+              quantity: (type === 'add') ? amount + 1 : amount -1
             })
           } else {
             // New consumer
             // update item doc by inserting new consumer
-            await tx.update(itemDocRef, {
+            await tx.update(itemsCollection.doc(itemId), {
               consumers: db.firestore.FieldValue.arrayUnion(userId)
             })
             // add new item consumer
-            await tx.set(consumersColRef, {
+            await tx.set(consumersCollection.doc(), {
               item_id: itemId,
               amount: 1,
               user_id: userId,
@@ -107,18 +110,18 @@ const actions = {
         })
       } catch (error) {
         console.log('transaction failed', error)
+        // return error
       }
     } else {
+      console.log('Item with no consumers')
       // Empty Consumer
-      // add to item's consumer
+      // add to item consumer
       let batch = db.batch()
-      // let itemDocRef = db.collection('items').doc(itemIndex)
-      batch.update(itemDocRef, {
-        consumers: db.firestore.FieldValue.arrayUnion(userId)
+      batch.update(itemsCollection.doc(itemId), {
+        consumers: [userId]
       })
-      // add new consumer of an item
-      let consumersDocRef = consumersCollection
-      batch.set(consumersDocRef, {
+      // add new consumer
+      batch.set(consumersCollection.doc(), {
         item_id: itemId,
         amount: 1,
         user_id: userId,
@@ -139,8 +142,8 @@ const mutations = {
   setItems (state, items) {
     state.items = items
   },
-  setConsumers (state, consumers) {
-    state.consumers = consumers
+  setUnsubItems (state, data) {
+    state.unsubItems = data
   }
 }
 

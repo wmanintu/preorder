@@ -15,6 +15,7 @@
         </el-col>
       </el-col>
     </div>
+    <pre>{{consumers}}</pre>
   </div>
 </template>
 
@@ -39,10 +40,9 @@ export default {
   },
   computed: {
     ...mapGetters({
+      consumers: 'Consumers/getConsumers',
       menu: 'Menus/getMenu',
-      menuIndex: 'Menus/getMenuIndex',
-      items: 'Items/getItems',
-      user: 'Items/getUser'
+      items: 'Items/getItems'
     }),
   },
   created () {
@@ -51,20 +51,20 @@ export default {
     this.setConsumersListener(this.menuId)
   },
   beforeDestroy () {
-    this.removeMenuListener(this.menuId)
-    this.removeItemsListener(this.menuId)
-    this.removeConsumersListener(this.menuId)
+    this.unsubMenuListener()
+    this.unsubItemsListener()
+    this.unsubConsumersListener()
   },
   methods: {
     ...mapActions({
       setMenuListener: 'Menus/setMenuListener',
-      removeMenuListener: 'Menus/removeMenuListener',
+      unsubMenuListener: 'Menus/unsubMenuListener',
       createItem: 'Items/createItem',
       setItemsListener: 'Items/setItemsListener',
-      removeItemsListener: 'Items/removeItemsListener',
+      unsubItemsListener: 'Items/unsubItemsListener',
       updateItemQuantity: 'Items/updateItemQuantity',
-      setConsumersListener: 'Items/setConsumersListener',
-      removeConsumersListener: 'Items/removeConsumersListener'
+      setConsumersListener: 'Consumers/setConsumersListener',
+      unsubConsumersListener: 'Consumers/unsubConsumersListener'
     }),
     backMainMenu () {
       this.$router.push({ name: 'menu-list' })
