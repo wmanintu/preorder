@@ -44,7 +44,7 @@ const actions = {
             item.amount = 0
           }
         })
-        consumerQuery.docChanges().forEach((change) => {
+        consumerQuery.docChanges().forEach(async (change) => {
           if (change.type === "added") {
             let matchIndex = items.findIndex(item => item.id === change.doc.data().item_id)
             items[matchIndex].amount = change.doc.data().amount
@@ -52,9 +52,25 @@ const actions = {
           if (change.type === "modified") {
             let matchIndex = items.findIndex(item => item.id === change.doc.data().item_id)
             items[matchIndex].amount = change.doc.data().amount
+           
+            if (change.doc.data().amount === 0) {
+               // delete document
+              try {
+                await db.collection('consumers').doc(change.doc.id).delete()
+                console.log('Document successfully deleted!')
+                let matchIndex = items.findIndex(item => item.id === change.doc.data().item_id)
+                let consumerIndex = items[matchIndex].consumers.findIndex(consumer => consumer.user_id === change.doc.data().item_id)
+                items[matchIndex].consumers.splice(consumerIndex, 1)
+              } catch (error) {
+                console.error('Error removing document: ', error)
+              }
+            }
           }
           if (change.type === "removed") {
             console.log("Removed: ", change.doc.data())
+            // find item
+            console.log(change.doc.data())
+            // remove consumer
           }
         })
         commit('setItems', items)

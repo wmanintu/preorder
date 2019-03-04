@@ -14,7 +14,6 @@ const getters = {
 const actions = {
   async createConsumer ({ commit }, payload) {
     try {
-      console.log('createConsumer', payload)
       let docRef = await consumersApi.addConsumer(payload)
       return docRef
     } catch (error) {
@@ -23,7 +22,6 @@ const actions = {
   },
   async updateConsumer ({ commit }, payload) {
     // Create a reference to the SF doc.
-    console.log('call update consumer', payload.consumerId)
     var docRef = consumersCollection.doc(payload.consumerId)
     return db.runTransaction((transaction) => {
       // This code may get re-run multiple times if there are conflicts.
@@ -32,11 +30,9 @@ const actions = {
         let newConsumer = null
         switch (payload.type) {
           case 'add':
-            console.log('case add')
             newConsumer = doc.data().amount + 1
             break
           case 'minus':
-            console.log('case minus')
             newConsumer = doc.data().amount - 1
             break
         }
@@ -46,7 +42,7 @@ const actions = {
         console.log('Transaction successfully committed!')
     }).catch((error) => {
         console.log('Transaction failed: ', error)
-    });
+    })
   }
 }
 
