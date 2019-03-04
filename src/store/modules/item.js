@@ -67,9 +67,10 @@ const actions = {
             }
           }
           if (change.type === 'modified') {
-            let matchIndex = findMatchingItemId(change.doc.data(), items)
-            items[matchIndex].amount = change.doc.data().amount
-           
+            if (change.doc.data().user_id === auth.currentUser.uid) {
+              let matchIndex = findMatchingItemId(change.doc.data(), items)
+              items[matchIndex].amount = change.doc.data().amount
+            }
             if (change.doc.data().amount === 0) {
               try {
                 await db.collection('consumers').doc(change.doc.id).delete()
