@@ -6,7 +6,7 @@
       <el-button :disabled="isDisable" slot="append" icon="el-icon-plus" @click.stop="handleAddInput"></el-button>
     </el-input>
     <el-tabs v-model="activeName">
-      <el-tab-pane label="Yours" name="first">
+      <el-tab-pane label="Main" name="first">
         <div v-for="(item, index) in items" :key="index">
           <el-col>
             <el-col :span="12">
@@ -21,7 +21,12 @@
           </el-col>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="Details" name="second">Config</el-tab-pane>
+      <el-tab-pane label="Detail 1" name="second">
+        <ItemAmount v-for="(item, iIndex) in itemAmount" :key="iIndex" :item="item"/>
+      </el-tab-pane>
+      <el-tab-pane label="Detail 2" name="third">
+        <ConsumerAmount v-for="(consumer, cIndex) in consumers" :key="cIndex" :consumer="consumer"/>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -30,13 +35,17 @@
 import Menu from '../components/Menu'
 import Item from '../components/Item'
 import AmountInput from '../components/AmountInput'
+import ItemAmount from '../components/ItemAmount'
+import ConsumerAmount from '../components/ConsumerAmount'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     Menu,
     Item,
-    AmountInput
+    AmountInput,
+    ItemAmount,
+    ConsumerAmount
   },
   props: [ 'menuId' ],
   data () {
@@ -49,17 +58,22 @@ export default {
   computed: {
     ...mapGetters({
       menu: 'Menus/getMenu',
-      items: 'Items/getItems'
+      items: 'Items/getItems',
+      itemAmount: 'Items/getItemAmount',
+      consumers: 'Consumers/getConsumers'
     }),
   },
   created () {
     this.setMenuListener(this.menuId)
     this.setItemsListener(this.menuId)
+    this.getConsumers(this.menuId)
   },
   beforeDestroy () {
     this.unsubMenuListener()
     this.unsubItemsListener()
     this.unsubConsumers()
+    this.unsubConsumersListener()
+    this.unsubConsumersItemListener()
   },
   methods: {
     ...mapActions({
@@ -68,7 +82,10 @@ export default {
       createItem: 'Items/createItem',
       setItemsListener: 'Items/setItemsListener',
       unsubItemsListener: 'Items/unsubItemsListener',
-      unsubConsumers: 'Items/unsubConsumers'
+      unsubConsumers: 'Items/unsubConsumersListener',
+      getConsumers: 'Consumers/getConsumers',
+      unsubConsumersListener: 'Consumers/unsubConsumersListener',
+      unsubConsumersItemListener: 'Consumers/unsubConsumersItemListener'
     }),
     backMainMenu () {
       this.$router.push({ name: 'menu-list' })

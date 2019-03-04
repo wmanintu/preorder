@@ -13,6 +13,16 @@ const state = {
 const getters = {
   getItems (state) {
     return state.items
+  },
+  getItemAmount (state) {
+    let itemAmount = state.items.map(item => {
+      let total = item.consumers.reduce((total, currentValue) => {
+        return total + currentValue.amount
+      }, 0)
+      let consumers = item.consumers.map(consumer => consumer.user_display_name)
+      return { total: total, consumers: consumers, name: item.item_name}
+    })
+    return itemAmount
   }
 }
 
@@ -88,7 +98,7 @@ const actions = {
   unsubItemsListener ({ state }) {
     state.unsubItems()
   },
-  unsubConsumers ({ state }) {
+  unsubConsumersListener ({ state }) {
     state.unsubConsumers()
   },
   async createItem ({ commit }, data) {
