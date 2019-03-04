@@ -16,13 +16,17 @@ const getters = {
   }
 }
 
+const findMatchingItemId = (doc, items) => {
+  let matchIndex = items.findIndex(item => item.id === doc.item_id)
+  return matchIndex
+}
+
 // actions
 const actions = {
   setItemsListener ({ commit }, menuId) {
     let unsubItems = itemsCollection.where('menu_id', '==', menuId)
     .orderBy('item_name', 'asc').onSnapshot(async snapshot => {
       let items = []
-      let consumers = []
 
       snapshot.forEach(doc => {
         let item = Object.assign({id: doc.id}, doc.data())
@@ -30,31 +34,33 @@ const actions = {
       })
       let unsubConsumers = await consumersCollection
       .where('menu_id', '==', menuId).onSnapshot(async consumerQuery => {
+        let consumers = []
         consumerQuery.forEach(doc => {
           let consumer = Object.assign({ consumerId: doc.id }, doc.data())
           consumers.push(consumer)
         })
         items.map(item => {
-          let match = consumers.find(consumer => consumer.item_id === item.id)
+          let matches = consumers.filter(consumer => consumer.item_id === item.id)
           item.consumers = []
-          if (match) {
-            item.consumers.push(match)
+          if (matches.length > 0) {
+            item.consumers = matches
           }
           if (!item.amount) {
             item.amount = 0
           }
         })
         consumerQuery.docChanges().forEach(async (change) => {
-          if (change.type === "added") {
-            let matchIndex = items.findIndex(item => item.id === change.doc.data().item_id)
-            items[matchIndex].amount = change.doc.data().amount
+          if (change.type === 'added') {
+            if (change.doc.data().user_id === auth.currentUser.uid) {
+              let matchIndex = findMatchingItemId(change.doc.data(), items)
+              items[matchIndex].amount = change.doc.data().amount
+            }
           }
-          if (change.type === "modified") {
-            let matchIndex = items.findIndex(item => item.id === change.doc.data().item_id)
+          if (change.type === 'modified') {
+            let matchIndex = findMatchingItemId(change.doc.data(), items)
             items[matchIndex].amount = change.doc.data().amount
            
             if (change.doc.data().amount === 0) {
-               // delete document
               try {
                 await db.collection('consumers').doc(change.doc.id).delete()
                 console.log('Document successfully deleted!')
@@ -65,12 +71,6 @@ const actions = {
                 console.error('Error removing document: ', error)
               }
             }
-          }
-          if (change.type === "removed") {
-            console.log("Removed: ", change.doc.data())
-            // find item
-            console.log(change.doc.data())
-            // remove consumer
           }
         })
         commit('setItems', items)
