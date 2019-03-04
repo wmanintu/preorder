@@ -9,6 +9,7 @@ import {
   Form,
   FormItem,
   Tabs,
+  TabPane,
   Icon,
   Row,
   Col,
@@ -25,6 +26,7 @@ Vue.use(Input)
 Vue.use(Form)
 Vue.use(FormItem)
 Vue.use(Tabs)
+Vue.use(TabPane)
 Vue.use(Icon)
 Vue.use(Row)
 Vue.use(Col)

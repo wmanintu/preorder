@@ -1,7 +1,7 @@
 <template>
   <div class="input-container">
     <el-button :disabled="item.amount === 0" @click.prevent="handleAmountInput('minus')" icon="el-icon-minus" circle></el-button>
-    <div class="amount-text">{{item.amount}}</div>
+    <div :class="item.amount > 0 ? 'amount-text-blue' : 'amount-text'">{{item.amount}}</div>
     <el-button @click.prevent="handleAmountInput('add')" icon="el-icon-plus" circle></el-button>
   </div>
 </template>
@@ -53,5 +53,13 @@ export default {
   font-size: 35px;
   margin: 0px 20px;
   display: inline-block;
+}
+.amount-text-blue {
+  line-height: 40px;
+  vertical-align: -6px;
+  font-size: 35px;
+  margin: 0px 20px;
+  display: inline-block;
+  color: #00b250;
 }
 </style>

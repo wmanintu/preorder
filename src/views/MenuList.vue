@@ -57,6 +57,7 @@ export default {
   -webkit-transition: .3s;
   transition: .3s;
   border-radius: 4px;
+  margin-bottom: 10px;
 }
 .card:hover {
   cursor: pointer;

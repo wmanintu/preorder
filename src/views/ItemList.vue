@@ -2,22 +2,27 @@
   <div>
     <el-button icon="el-icon-arrow-left" @click="backMainMenu"></el-button>
     <Menu :menu="menu"/>
-    <el-input :disabled="isDisable" placeholder="Please input" v-model="inputItem" @keyup.enter.native="handleAddInput" clearable>
+    <el-input :disabled="isDisable" placeholder="Add item here" v-model="inputItem" @keyup.enter.native="handleAddInput" clearable>
       <el-button :disabled="isDisable" slot="append" icon="el-icon-plus" @click.stop="handleAddInput"></el-button>
     </el-input>
-    <div v-for="(item, index) in items" :key="index">
-      <el-col>
-        <el-col :span="12">
-          <Item :item="item"/>
-          <div v-for="(consumer, cindex) in item.consumers" :key="cindex">
-            {{consumer.user_display_name}}
-          </div>
-        </el-col>
-        <el-col :span="12">
-          <AmountInput @handleAmountInput="handleAmountInput" :item="item" :index="index"/>
-        </el-col>
-      </el-col>
-    </div>
+    <el-tabs v-model="activeName">
+      <el-tab-pane label="Yours" name="first">
+        <div v-for="(item, index) in items" :key="index">
+          <el-col>
+            <el-col :span="12">
+              <Item :item="item"/>
+              <div class="consumer-name" v-for="(consumer, cindex) in item.consumers" :key="cindex">
+                {{consumer.user_display_name}}<span v-if="cindex !== item.consumers.length - 1">,</span>
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <AmountInput @handleAmountInput="handleAmountInput" :item="item" :index="index"/>
+            </el-col>
+          </el-col>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="Details" name="second">Config</el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
@@ -37,7 +42,8 @@ export default {
   data () {
     return {
       inputItem: '',
-      isDisable: false
+      isDisable: false,
+      activeName: 'first'
     }
   },
   computed: {
@@ -132,5 +138,10 @@ export default {
 .card:hover {
   cursor: pointer;
   background-color: grey;
+}
+.consumer-name {
+  font-size: 12px;
+  font-style: italic;
+  display: inline;
 }
 </style>

@@ -65,8 +65,10 @@ const actions = {
                 await db.collection('consumers').doc(change.doc.id).delete()
                 console.log('Document successfully deleted!')
                 let matchIndex = items.findIndex(item => item.id === change.doc.data().item_id)
-                let consumerIndex = items[matchIndex].consumers.findIndex(consumer => consumer.user_id === change.doc.data().item_id)
-                items[matchIndex].consumers.splice(consumerIndex, 1)
+                let consumerIndex = items[matchIndex].consumers.findIndex(consumer => consumer.user_id === change.doc.data().user_id)
+                if (consumerIndex >= 0) {
+                  items[matchIndex].consumers.splice(consumerIndex, 1)
+                }
               } catch (error) {
                 console.error('Error removing document: ', error)
               }
