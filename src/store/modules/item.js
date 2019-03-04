@@ -5,7 +5,8 @@ import { db, auth, itemsCollection, consumersCollection } from '../../config/fir
 // initial state
 const state = {
   items: [],
-  unsubItems: null
+  unsubItems: null,
+  unsubConsumers: null
 }
 
 // getters
@@ -23,20 +24,44 @@ const actions = {
       let items = []
       let consumers = []
 
-      snapshot.forEach(doc => { items.push({ id: doc.id, data: doc.data() }) })
-      let consumerQuery = await consumersCollection.where('menu_id', '==', menuId).get()
-      consumerQuery.forEach(doc => { consumers.push({consumerId: doc.id, data: doc.data()})})
-      items.map(item => {
-        let match = consumers.find(consumer => consumer.data.item_id === item.id)
-        item.consumers = []
-        item.amountInput = 0
-
-        if (match) {
-          item.consumers.push(match)
-          item.amountInput = match.data.amount
-        }
+      snapshot.forEach(doc => {
+        let item = Object.assign({id: doc.id}, doc.data())
+        items.push(item)
       })
-      commit('setItems', items)
+      let unsubConsumers = await consumersCollection
+      .where('menu_id', '==', menuId).onSnapshot(async consumerQuery => {
+        consumerQuery.forEach(doc => {
+          let consumer = Object.assign({ consumerId: doc.id }, doc.data())
+          consumers.push(consumer)
+        })
+        items.map(item => {
+          let match = consumers.find(consumer => consumer.item_id === item.id)
+          item.consumers = []
+          if (match) {
+            item.consumers.push(match)
+          }
+          if (!item.amount) {
+            item.amount = 0
+          }
+        })
+        consumerQuery.docChanges().forEach((change) => {
+          if (change.type === "added") {
+            let matchIndex = items.findIndex(item => item.id === change.doc.data().item_id)
+            items[matchIndex].amount = change.doc.data().amount
+          }
+          if (change.type === "modified") {
+            let matchIndex = items.findIndex(item => item.id === change.doc.data().item_id)
+            items[matchIndex].amount = change.doc.data().amount
+          }
+          if (change.type === "removed") {
+            console.log("Removed: ", change.doc.data())
+          }
+        })
+        commit('setItems', items)
+      }, (error) => {
+        console.log(error)
+      })
+      commit('setUnsubConsumers', unsubConsumers)
     }, (error) => {
       console.log(error)
     })
@@ -44,6 +69,9 @@ const actions = {
   },
   unsubItemsListener ({ state }) {
     state.unsubItems()
+  },
+  unsubConsumers ({ state }) {
+    state.unsubConsumers()
   },
   async createItem ({ commit }, data) {
     try {
@@ -55,85 +83,6 @@ const actions = {
     } catch (error) {
       return error
     }
-  },
-  // Item amount update
-  async updateItemQuantity ({ state }, data) {
-    // (itemId, itemIndex)
-    console.log('call updateItemQuantity', data)
-    let user = auth.currentUser
-    let itemId = data.itemId
-    let itemIndex = data.itemIndex
-    let amount = data.amount
-    let menuId = data.menuId
-    let userId = user.uid
-    let type = data.type
-    let currentItemConsumers = state.items[itemIndex].data.consumers
-    let userDisplayName = user.displayName
-    
-    if (currentItemConsumers.length > 0) {
-      // has consumer
-      console.log('Item with consumers')
-      try {
-        await db.runTransaction(async tx => {
-          let itemDoc = await tx.get(itemsCollection.doc(itemId))
-          // find my user id in itemDocument
-          if (itemDoc.data().consumers.find(element => element === userId)) {
-            // Old consumer
-            let querySnapshot = await consumersCollection
-            .where('item_id', '==', itemId)
-            .where('user_id', '==', userId)
-            .get()
-            let consumerDoc = null
-            querySnapshot.forEach(doc => {
-              console.log('doc', doc)
-              consumerDoc = doc.ref
-            })
-            console.log('consumerdoc', consumerDoc)
-            await tx.update(consumerDoc, {
-              quantity: (type === 'add') ? amount + 1 : amount -1
-            })
-          } else {
-            // New consumer
-            // update item doc by inserting new consumer
-            await tx.update(itemsCollection.doc(itemId), {
-              consumers: db.firestore.FieldValue.arrayUnion(userId)
-            })
-            // add new item consumer
-            await tx.set(consumersCollection.doc(), {
-              item_id: itemId,
-              amount: 1,
-              user_id: userId,
-              user_display_name: userDisplayName,
-              menu_id: menuId
-            })
-          }
-        })
-      } catch (error) {
-        console.log('transaction failed', error)
-        // return error
-      }
-    } else {
-      console.log('Item with no consumers')
-      // Empty Consumer
-      // add to item consumer
-      let batch = db.batch()
-      batch.update(itemsCollection.doc(itemId), {
-        consumers: [userId]
-      })
-      // add new consumer
-      batch.set(consumersCollection.doc(), {
-        item_id: itemId,
-        amount: 1,
-        user_id: userId,
-        user_display_name: userDisplayName,
-        menu_id: menuId
-      })
-      try {
-        await batch.commit()
-      } catch (error) {
-        console.log('batch failed')
-      }
-    }
   }
 }
 
@@ -144,6 +93,9 @@ const mutations = {
   },
   setUnsubItems (state, data) {
     state.unsubItems = data
+  },
+  setUnsubConsumers (state, data) {
+    state.unsubConsumers = data
   }
 }
 

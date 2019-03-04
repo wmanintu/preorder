@@ -9,13 +9,15 @@
       <el-col>
         <el-col :span="12">
           <Item :item="item"/>
+          <div v-for="(consumer, cindex) in item.consumers" :key="cindex">
+            {{consumer.user_display_name}}
+          </div>
         </el-col>
         <el-col :span="12">
           <AmountInput @handleAmountInput="handleAmountInput" :item="item" :index="index"/>
         </el-col>
       </el-col>
     </div>
-    <pre>{{consumers}}</pre>
   </div>
 </template>
 
@@ -40,7 +42,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      consumers: 'Consumers/getConsumers',
       menu: 'Menus/getMenu',
       items: 'Items/getItems'
     }),
@@ -48,12 +49,11 @@ export default {
   created () {
     this.setMenuListener(this.menuId)
     this.setItemsListener(this.menuId)
-    this.setConsumersListener(this.menuId)
   },
   beforeDestroy () {
     this.unsubMenuListener()
     this.unsubItemsListener()
-    this.unsubConsumersListener()
+    this.unsubConsumers()
   },
   methods: {
     ...mapActions({
@@ -62,9 +62,7 @@ export default {
       createItem: 'Items/createItem',
       setItemsListener: 'Items/setItemsListener',
       unsubItemsListener: 'Items/unsubItemsListener',
-      updateItemQuantity: 'Items/updateItemQuantity',
-      setConsumersListener: 'Consumers/setConsumersListener',
-      unsubConsumersListener: 'Consumers/unsubConsumersListener'
+      unsubConsumers: 'Items/unsubConsumers'
     }),
     backMainMenu () {
       this.$router.push({ name: 'menu-list' })

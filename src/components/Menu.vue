@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>{{menu.data.name}}</h1>
-    <time class="time">{{formatTimestamp(menu.data.timestamp)}}</time>
+    <div class="time">{{formatTimestamp(menu.data.timestamp)}}</div>
     <p>{{menu.data.desc}}</p>
   </div>
 </template>

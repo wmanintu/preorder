@@ -1,28 +1,41 @@
 <template>
   <div class="input-container">
-    <el-button :disabled="item.amountInput === 0" @click="handleAmountInput('minus')" icon="el-icon-minus" circle></el-button>
-    <div class="amount-text">{{item.amountInput}}</div>
-    <el-button @click="handleAmountInput('add')" icon="el-icon-plus" circle></el-button>
+    <el-button :disabled="item.amount === 0" @click.prevent="handleAmountInput('minus')" icon="el-icon-minus" circle></el-button>
+    <div class="amount-text">{{item.amount}}</div>
+    <el-button @click.prevent="handleAmountInput('add')" icon="el-icon-plus" circle></el-button>
   </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
+import { auth } from '../config/firebase'
 export default {
-
   props: [ 'item', 'index' ],
   methods: {
     ...mapActions({
-      updateItemQuantity: 'Items/updateItemQuantity'
+      updateConsumer: 'Consumers/updateConsumer',
+      createConsumer: 'Consumers/createConsumer'
     }),
     handleAmountInput (type) {
-      this.updateItemQuantity({
-        itemId: this.item.id,
-        itemAmount: this.item.amountInput,
-        menuId: this.item.data.menu_id,
-        itemIndex: this.index,
-        type: type
-      })
+      let isExistingConsumer = this.findExistingConsumer()
+      let payload = {
+        item_id: this.item.id,
+        menu_id: this.item.menu_id,
+        user_id: auth.currentUser.uid,
+        user_display_name: auth.currentUser.displayName
+      }
+      
+      if (isExistingConsumer) {
+        payload.consumerId = isExistingConsumer.consumerId
+        payload.type = type
+        this.updateConsumer(payload)
+      } else {
+        payload.amount = 1
+        this.createConsumer(payload)
+      }
+    },
+    findExistingConsumer () {
+      return this.item.consumers.find(consumer => consumer.user_id === auth.currentUser.uid)
     }
   }
 }

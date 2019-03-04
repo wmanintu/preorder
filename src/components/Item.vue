@@ -1,6 +1,6 @@
 <template>
   <div class="item-container">
-    <strong>{{item.data.item_name}}</strong>
+    <strong>{{item.item_name}}</strong>
   </div>
 </template>
 

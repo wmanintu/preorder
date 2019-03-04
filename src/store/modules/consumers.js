@@ -1,45 +1,57 @@
-import { consumersCollection } from '../../config/firebase'
+/* eslint-disable no-unused-vars */
+import consumersApi from '../../api/consumer'
+import { db, consumersCollection } from '../../config/firebase'
 
 // initial state
 const state = {
-  consumers: [],
-  unsubConsumers: null
 }
 
 // getters
 const getters = {
-  getConsumers (state) {
-    return state.consumers
-  }
 }
 
 // actions
 const actions = {
-  setConsumersListener ({ commit }, menuId) {
-    let unsubConsumers = consumersCollection.where('menu_id', '==', menuId).onSnapshot(snapshot => {
-      let consumers = []
-      snapshot.forEach(doc => {
-        consumers.push({ id: doc.id, data: doc.data() })
-      })
-      commit('setConsumers', consumers)
-      commit('setUnsubConsumers', unsubConsumers)
-    }, (error) => {
-      console.log(error)
-    })
+  async createConsumer ({ commit }, payload) {
+    try {
+      console.log('createConsumer', payload)
+      let docRef = await consumersApi.addConsumer(payload)
+      return docRef
+    } catch (error) {
+      return error
+    }
   },
-  unsubConsumersListener ({ state }) {
-    state.unsubConsumers()
+  async updateConsumer ({ commit }, payload) {
+    // Create a reference to the SF doc.
+    console.log('call update consumer', payload.consumerId)
+    var docRef = consumersCollection.doc(payload.consumerId)
+    return db.runTransaction((transaction) => {
+      // This code may get re-run multiple times if there are conflicts.
+      return transaction.get(docRef).then((doc) => {
+        if (!doc.exists) { throw "Document does not exist!" }
+        let newConsumer = null
+        switch (payload.type) {
+          case 'add':
+            console.log('case add')
+            newConsumer = doc.data().amount + 1
+            break
+          case 'minus':
+            console.log('case minus')
+            newConsumer = doc.data().amount - 1
+            break
+        }
+        transaction.update(docRef, { amount: newConsumer })
+      })
+    }).then(() => {
+        console.log('Transaction successfully committed!')
+    }).catch((error) => {
+        console.log('Transaction failed: ', error)
+    });
   }
 }
 
 // mutations
 const mutations = {
-  setConsumers (state, consumers) {
-    state.consumers = consumers
-  },
-  setUnsubConsumers (state, data) {
-    state.unsubConsumers = data
-  }
 }
 
 export default {
