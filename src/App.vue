@@ -1,10 +1,7 @@
 <template>
   <div id="app">
     <el-row :gutter="10">
-      <el-col class="hidden-xs-only" :sm="14" :md="16" :lg="20">
-        <h1></h1>
-      </el-col>
-      <el-col :xs="24" :sm="10" :md="8" :lg="4">
+      <el-col :xs="{span: 24}" :md="{span: 8, offset: 8}" :lg="{span: 8, offset: 8}">
         <div v-if="user" style="text-align: right;">
           <User :displayName="user.displayName" :photoUrl="user.photoUrl"/>
           <el-button type="text" @click.prevent="handleSignOut">Sign out</el-button>
