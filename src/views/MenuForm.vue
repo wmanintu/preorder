@@ -3,7 +3,7 @@
     <div style="margin-bottom: 10px;">
       <el-button icon="el-icon-arrow-left" @click="redirectTo('menu-list')"></el-button>
     </div>
-    
+
     <h1>Create Menu</h1>
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
       <el-form-item label="Title" prop="name">
@@ -39,7 +39,7 @@ export default {
           { required: false, message: 'Please input menu description', trigger: 'blur' }
         ]
       }
-    };
+    }
   },
   methods: {
     ...mapActions({
@@ -64,7 +64,7 @@ export default {
       })
     },
     resetForm (formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
     },
     redirectTo (routeName) {
       this.$router.push({ name: routeName })

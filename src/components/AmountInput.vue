@@ -24,7 +24,6 @@ export default {
         user_id: auth.currentUser.uid,
         user_display_name: auth.currentUser.displayName
       }
-      
       if (isExistingConsumer) {
         payload.consumerId = isExistingConsumer.consumerId
         payload.type = type

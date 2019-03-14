@@ -25,7 +25,7 @@ export default {
   computed: {
     ...mapGetters({
       menus: 'Menus/getMenus'
-    }),
+    })
   },
   created () {
     this.setMenusListener()

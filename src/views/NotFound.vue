@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  create() {
+  create () {
     this.$router.push({ name: 'login' })
   }
 }

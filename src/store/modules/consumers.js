@@ -28,45 +28,45 @@ const actions = {
   },
   async getConsumers ({ commit }, menuId) {
     let unsubConsumersListener = consumersCollection.where('menu_id', '==', menuId)
-    .onSnapshot(async snapshot => {
-      let consumers = []
-      snapshot.forEach(doc => {
-        if (consumers.length > 0) {
-          let matchIndex = consumers.findIndex(consumer => consumer.user_id === doc.data().user_id)
-          if (matchIndex >= 0) {
-            consumers[matchIndex].item_id_list.push({item_id: doc.data().item_id, amount: doc.data().amount})
+      .onSnapshot(async snapshot => {
+        let consumers = []
+        snapshot.forEach(doc => {
+          if (consumers.length > 0) {
+            let matchIndex = consumers.findIndex(consumer => consumer.user_id === doc.data().user_id)
+            if (matchIndex >= 0) {
+              consumers[matchIndex].item_id_list.push({ item_id: doc.data().item_id, amount: doc.data().amount })
+            } else {
+              let consumer = doc.data()
+              consumer.item_id_list = [{ item_id: doc.data().item_id, amount: doc.data().amount }]
+              consumers.push(consumer)
+            }
           } else {
             let consumer = doc.data()
-            consumer.item_id_list = [{item_id: doc.data().item_id, amount: doc.data().amount}]
+            consumer.item_id_list = [{ item_id: doc.data().item_id, amount: doc.data().amount }]
             consumers.push(consumer)
           }
-        } else {
-          let consumer = doc.data()
-          consumer.item_id_list = [{item_id: doc.data().item_id, amount: doc.data().amount}]
-          consumers.push(consumer)
-        }
-      })
-      let unsubConsumersItemListener = itemsCollection.where('menu_id', '==', menuId)
-      .onSnapshot(async itemSnapshot => {
-        let items = []
-        itemSnapshot.forEach(doc => {
-          items.push(Object.assign({item_id: doc.id}, doc.data()))
         })
-        consumers.map(consumer => {
-          consumer.item_id_list.map(cItem => {
-            cItem.item_name = ''
-            let match = items.find(item => item.item_id === cItem.item_id)
-            if (match) {
-              cItem.item_name = match.item_name
-            }
-            return cItem
+        let unsubConsumersItemListener = itemsCollection.where('menu_id', '==', menuId)
+          .onSnapshot(async itemSnapshot => {
+            let items = []
+            itemSnapshot.forEach(doc => {
+              items.push(Object.assign({ item_id: doc.id }, doc.data()))
+            })
+            consumers.map(consumer => {
+              consumer.item_id_list.map(cItem => {
+                cItem.item_name = ''
+                let match = items.find(item => item.item_id === cItem.item_id)
+                if (match) {
+                  cItem.item_name = match.item_name
+                }
+                return cItem
+              })
+              return consumer
+            })
+            commit('setConsumers', consumers)
           })
-          return consumer
-        })
-        commit('setConsumers', consumers)
+        commit('setUnsubConsumersItemListener', unsubConsumersItemListener)
       })
-      commit('setUnsubConsumersItemListener', unsubConsumersItemListener)
-    })
     commit('setUnsubConsumersListener', unsubConsumersListener)
   },
   unsubConsumersListener ({ state }) {
@@ -81,7 +81,7 @@ const actions = {
     return db.runTransaction((transaction) => {
       // This code may get re-run multiple times if there are conflicts.
       return transaction.get(docRef).then((doc) => {
-        if (!doc.exists) { throw "Document does not exist!" }
+        if (!doc.exists) { throw new Error('Document does not exist!') }
         let newConsumer = null
         switch (payload.type) {
           case 'add':
@@ -94,9 +94,9 @@ const actions = {
         transaction.update(docRef, { amount: newConsumer })
       })
     }).then(() => {
-        console.log('Transaction successfully committed!')
+      console.log('Transaction successfully committed!')
     }).catch((error) => {
-        console.log('Transaction failed: ', error)
+      console.log('Transaction failed: ', error)
     })
   }
 }

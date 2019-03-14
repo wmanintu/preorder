@@ -90,10 +90,10 @@ const mutations = {
   setMenu (state, menu) {
     state.menu = menu
   },
-  setUnsubMenuOne(state, data) {
+  setUnsubMenuOne (state, data) {
     state.unsubMenuOne = data
   },
-  setUnsubMenuTwo(state, data) {
+  setUnsubMenuTwo (state, data) {
     state.unsubMenuTwo = data
   }
 }

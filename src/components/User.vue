@@ -6,9 +6,9 @@
 </template>
 
 <script>
-  export default {
-    props: [ 'displayName', 'photoUrl' ]
-  }
+export default {
+  props: [ 'displayName', 'photoUrl' ]
+}
 </script>
 
 <style scoped>

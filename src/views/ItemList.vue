@@ -61,7 +61,7 @@ export default {
       items: 'Items/getItems',
       itemAmount: 'Items/getItemAmount',
       consumers: 'Consumers/getConsumers'
-    }),
+    })
   },
   created () {
     this.setMenuListener(this.menuId)

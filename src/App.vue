@@ -37,7 +37,7 @@ export default {
           displayName: user.displayName,
           photoUrl: user.photoURL
         })
-        if(this.$route.name === 'login' || this.$route.name === 'non-existing') {
+        if (this.$route.name === 'login' || this.$route.name === 'non-existing') {
           this.$router.push({ name: 'menu-list' })
         }
         this.setUserLoading(false)
