@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for preorder/src/store/modules/item.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">All files</a> / <a href="index.html">preorder/src/store/modules</a> item.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>0/73</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/16</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/16</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>0/68</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/* eslint-disable no-unused-vars */
+<span class="cstat-no" title="statement not covered" >import itemApi from '../../api/item'</span>
+<span class="cstat-no" title="statement not covered" >import { db, auth, itemsCollection, consumersCollection } from '../../config/firebase'</span>
+&nbsp;
+// initial state
+const state = <span class="cstat-no" title="statement not covered" >{</span>
+  items: [],
+  unsubItems: null,
+  unsubConsumers: null
+}
+&nbsp;
+// getters
+const getters = <span class="cstat-no" title="statement not covered" >{</span>
+  getItems (state) {
+<span class="cstat-no" title="statement not covered" >    return state.items</span>
+  },
+  getItemAmount (state) {
+    let itemAmount = <span class="cstat-no" title="statement not covered" >state.items.map(<span class="fstat-no" title="function not covered" >item</span> =&gt; {</span>
+      let total = <span class="cstat-no" title="statement not covered" >item.consumers.reduce(<span class="fstat-no" title="function not covered" >(t</span>otal, currentValue) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        return total + currentValue.amount</span>
+      }, 0)
+      let consumers = <span class="cstat-no" title="statement not covered" >item.consumers.map(<span class="fstat-no" title="function not covered" >consumer</span> =&gt; <span class="cstat-no" title="statement not covered" >consumer.user_display_name)</span></span>
+<span class="cstat-no" title="statement not covered" >      return { total: total, consumers: consumers, name: item.item_name }</span>
+    })
+<span class="cstat-no" title="statement not covered" >    return itemAmount</span>
+  }
+}
+&nbsp;
+const findMatchingItemId = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(d</span>oc, items) =&gt; {</span>
+  let matchIndex = <span class="cstat-no" title="statement not covered" >items.findIndex(<span class="fstat-no" title="function not covered" >item</span> =&gt; <span class="cstat-no" title="statement not covered" >item.id === doc.item_id)</span></span>
+<span class="cstat-no" title="statement not covered" >  return matchIndex</span>
+}
+&nbsp;
+// actions
+const actions = <span class="cstat-no" title="statement not covered" >{</span>
+  setItemsListener ({ commit }, menuId) {
+    let unsubItems = <span class="cstat-no" title="statement not covered" >itemsCollection.where('menu_id', '==', menuId)</span>
+      .orderBy('item_name', 'asc').onSnapshot(<span class="fstat-no" title="function not covered" >async </span>snapshot =&gt; {
+        let items = <span class="cstat-no" title="statement not covered" >[]</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        snapshot.forEach(<span class="fstat-no" title="function not covered" >doc</span> =&gt; {</span>
+          let item = <span class="cstat-no" title="statement not covered" >Object.assign({ id: doc.id }, doc.data())</span>
+<span class="cstat-no" title="statement not covered" >          items.push(item)</span>
+        })
+        let unsubConsumers = <span class="cstat-no" title="statement not covered" >await consumersCollection</span>
+          .where('menu_id', '==', menuId).onSnapshot(<span class="fstat-no" title="function not covered" >async </span>consumerQuery =&gt; {
+            let consumers = <span class="cstat-no" title="statement not covered" >[]</span>
+<span class="cstat-no" title="statement not covered" >            consumerQuery.forEach(<span class="fstat-no" title="function not covered" >doc</span> =&gt; {</span>
+              let consumer = <span class="cstat-no" title="statement not covered" >Object.assign({ consumerId: doc.id }, doc.data())</span>
+<span class="cstat-no" title="statement not covered" >              consumers.push(consumer)</span>
+            })
+<span class="cstat-no" title="statement not covered" >            items.map(<span class="fstat-no" title="function not covered" >item</span> =&gt; {</span>
+              let matches = <span class="cstat-no" title="statement not covered" >consumers.filter(<span class="fstat-no" title="function not covered" >consumer</span> =&gt; <span class="cstat-no" title="statement not covered" >consumer.item_id === item.id)</span></span>
+<span class="cstat-no" title="statement not covered" >              item.consumers = []</span>
+<span class="cstat-no" title="statement not covered" >              if (matches.length &gt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >                item.consumers = matches</span>
+              }
+<span class="cstat-no" title="statement not covered" >              if (!item.amount) {</span>
+<span class="cstat-no" title="statement not covered" >                item.amount = 0</span>
+              }
+            })
+<span class="cstat-no" title="statement not covered" >            consumerQuery.docChanges().forEach(<span class="fstat-no" title="function not covered" >async (</span>change) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >              if (change.type === 'added') {</span>
+<span class="cstat-no" title="statement not covered" >                if (change.doc.data().user_id === auth.currentUser.uid) {</span>
+                  let matchIndex = <span class="cstat-no" title="statement not covered" >findMatchingItemId(change.doc.data(), items)</span>
+<span class="cstat-no" title="statement not covered" >                  items[matchIndex].amount = change.doc.data().amount</span>
+                }
+              }
+<span class="cstat-no" title="statement not covered" >              if (change.type === 'modified') {</span>
+<span class="cstat-no" title="statement not covered" >                if (change.doc.data().user_id === auth.currentUser.uid) {</span>
+                  let matchIndex = <span class="cstat-no" title="statement not covered" >findMatchingItemId(change.doc.data(), items)</span>
+<span class="cstat-no" title="statement not covered" >                  items[matchIndex].amount = change.doc.data().amount</span>
+                }
+<span class="cstat-no" title="statement not covered" >                if (change.doc.data().amount === 0) {</span>
+<span class="cstat-no" title="statement not covered" >                  try {</span>
+<span class="cstat-no" title="statement not covered" >                    await db.collection('consumers').doc(change.doc.id).delete()</span>
+<span class="cstat-no" title="statement not covered" >                    console.log('Document successfully deleted!')</span>
+                    let matchIndex = <span class="cstat-no" title="statement not covered" >items.findIndex(<span class="fstat-no" title="function not covered" >item</span> =&gt; <span class="cstat-no" title="statement not covered" >item.id === change.doc.data().item_id)</span></span>
+                    let consumerIndex = <span class="cstat-no" title="statement not covered" >items[matchIndex].consumers.findIndex(<span class="fstat-no" title="function not covered" >consumer</span> =&gt; <span class="cstat-no" title="statement not covered" >consumer.user_id === change.doc.data().user_id)</span></span>
+<span class="cstat-no" title="statement not covered" >                    if (consumerIndex &gt;= 0) {</span>
+<span class="cstat-no" title="statement not covered" >                      items[matchIndex].consumers.splice(consumerIndex, 1)</span>
+                    }
+                  } catch (error) {
+<span class="cstat-no" title="statement not covered" >                    console.error('Error removing document: ', error)</span>
+                  }
+                }
+              }
+            })
+<span class="cstat-no" title="statement not covered" >            commit('setItems', items)</span>
+          }, (<span class="fstat-no" title="function not covered" >error) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >            console.log(error)</span>
+          })
+<span class="cstat-no" title="statement not covered" >        commit('setUnsubConsumers', unsubConsumers)</span>
+      }, (<span class="fstat-no" title="function not covered" >error) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        console.log(error)</span>
+      })
+<span class="cstat-no" title="statement not covered" >    commit('setUnsubItems', unsubItems)</span>
+  },
+  unsubItemsListener ({ state }) {
+<span class="cstat-no" title="statement not covered" >    state.unsubItems()</span>
+  },
+  unsubConsumersListener ({ state }) {
+<span class="cstat-no" title="statement not covered" >    state.unsubConsumers()</span>
+  },
+  async createItem ({ commit }, data) {
+<span class="cstat-no" title="statement not covered" >    try {</span>
+<span class="cstat-no" title="statement not covered" >      data.timestamp = Date.now()</span>
+      let payload = <span class="cstat-no" title="statement not covered" >{}</span>
+<span class="cstat-no" title="statement not covered" >      payload = Object.assign(payload, data)</span>
+      let docRef = <span class="cstat-no" title="statement not covered" >await itemApi.createItem(payload)</span>
+<span class="cstat-no" title="statement not covered" >      return docRef</span>
+    } catch (error) {
+<span class="cstat-no" title="statement not covered" >      return error</span>
+    }
+  }
+}
+&nbsp;
+// mutations
+const mutations = <span class="cstat-no" title="statement not covered" >{</span>
+  setItems (state, items) {
+<span class="cstat-no" title="statement not covered" >    state.items = items</span>
+  },
+  setUnsubItems (state, data) {
+<span class="cstat-no" title="statement not covered" >    state.unsubItems = data</span>
+  },
+  setUnsubConsumers (state, data) {
+<span class="cstat-no" title="statement not covered" >    state.unsubConsumers = data</span>
+  }
+}
+&nbsp;
+export default {
+  namespaced: true,
+  state,
+  getters,
+  actions,
+  mutations
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Thu Mar 14 2019 04:15:19 GMT-0400 (EDT)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>
