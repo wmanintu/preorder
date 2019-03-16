@@ -14,7 +14,8 @@ module.exports = {
     '/node_modules/'
   ],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1'
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '.../config/firebase': '<rootDir>/tests/unit/mocks/firebaseMock.js'
   },
   snapshotSerializers: [
     'jest-serializer-vue'
@@ -22,22 +23,5 @@ module.exports = {
   testMatch: [
     '**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)'
   ],
-  testURL: 'http://localhost/',
-  collectCoverage: true,
-  collectCoverageFrom: [
-    '**/*.{js,vue}',
-    '!**/node_modules/**',
-    '!**/dist/**',
-    '!**/public/**',
-    '!**/coverage/**',
-    '!**/tests/**'
-  ],
-  coveragePathIgnorePatterns: [
-    '/tests/unit',
-    '/tests/e2e',
-    '.eslintrc.js',
-    'babel.config.js',
-    'jest.config.js',
-    'postcss.config.js'
-  ]
+  testURL: 'http://localhost/'
 }

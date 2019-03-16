@@ -1,8 +1,8 @@
 <template>
   <div class="input-container">
-    <el-button :disabled="item.amount === 0" @click.prevent="handleAmountInput('minus')" icon="el-icon-minus" circle></el-button>
+    <el-button name="minus-button" :disabled="item.amount === 0" @click.prevent="handleAmountInput('minus')" icon="el-icon-minus" circle></el-button>
     <div :class="item.amount > 0 ? 'amount-text-blue' : 'amount-text'">{{item.amount}}</div>
-    <el-button @click.prevent="handleAmountInput('add')" icon="el-icon-plus" circle></el-button>
+    <el-button class="plus-button" @click.prevent="handleAmountInput('add')" icon="el-icon-plus" circle></el-button>
   </div>
 </template>
 
@@ -11,30 +11,47 @@ import { mapActions } from 'vuex'
 import { auth } from '../config/firebase'
 export default {
   props: [ 'item', 'index' ],
+  data () {
+    return {
+      auth: auth
+    }
+  },
   methods: {
     ...mapActions({
       updateConsumer: 'Consumers/updateConsumer',
       createConsumer: 'Consumers/createConsumer'
     }),
     handleAmountInput (type) {
-      let isExistingConsumer = this.findExistingConsumer()
-      let payload = {
-        item_id: this.item.id,
-        menu_id: this.item.menu_id,
-        user_id: auth.currentUser.uid,
-        user_display_name: auth.currentUser.displayName
-      }
-      if (isExistingConsumer) {
-        payload.consumerId = isExistingConsumer.consumerId
-        payload.type = type
-        this.updateConsumer(payload)
+      let consumer = this.findExistingConsumer()
+      if (consumer) {
+        let updatePayload = this.createUpdateConsumerPayload(type, consumer.consumerId)
+        this.updateConsumer(updatePayload)
       } else {
-        payload.amount = 1
-        this.createConsumer(payload)
+        let createPayload = this.createNewConsumerPayload()
+        this.createConsumer(createPayload)
       }
     },
     findExistingConsumer () {
-      return this.item.consumers.find(consumer => consumer.user_id === auth.currentUser.uid)
+      return this.item.consumers.find(consumer => consumer.user_id === this.auth.currentUser.uid)
+    },
+    createNewConsumerPayload () {
+      return {
+        item_id: this.item.id,
+        menu_id: this.item.menu_id,
+        user_id: this.auth.currentUser.uid,
+        user_display_name: this.auth.currentUser.displayName,
+        amount: 1
+      }
+    },
+    createUpdateConsumerPayload (type, consumerId) {
+      return {
+        item_id: this.item.id,
+        menu_id: this.item.menu_id,
+        user_id: this.auth.currentUser.uid,
+        user_display_name: this.auth.currentUser.displayName,
+        consumerId: consumerId,
+        type: type
+      }
     }
   }
 }
