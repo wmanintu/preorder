@@ -28,13 +28,10 @@ const auth = {
 
 const wrapper = shallowMount(AmountInput, {
   localVue: localVue,
-  propsData: { item, auth },
-  data() {
-    return {
-      auth: auth
-    }
-  }
+  propsData: { item }
 })
+
+wrapper.setData({ auth: auth })
 
 describe('Item.vue', () => {
   // RENDER
@@ -72,9 +69,4 @@ describe('Item.vue', () => {
     }
     expect(expected).toEqual(received)
   })
-  // EVENT
-  // it('button minus', () => {
-  //   wrapper.vm.createUpdateConsumerPayload('add')
-  //   expect(wrapper.vm.findExistingConsumer()).toHaveBeenCalled()
-  // })
 })

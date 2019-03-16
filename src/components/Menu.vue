@@ -12,7 +12,7 @@ export default {
   props: [ 'menu' ],
   methods: {
     formatTimestamp (timestamp) {
-      return timestamp ? formatUnixTimestamp(timestamp.seconds) : ''
+      return formatUnixTimestamp(timestamp.seconds)
     }
   }
 }

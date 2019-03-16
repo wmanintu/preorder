@@ -23,5 +23,23 @@ module.exports = {
   testMatch: [
     '**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)'
   ],
-  testURL: 'http://localhost/'
+  testURL: 'http://localhost/',
+  collectCoverage: true,
+  collectCoverageFrom: [
+    '**/*.{js,vue}',
+    '!**/node_modules/**',
+    '!**/dist/**',
+    '!**/public/**',
+    '!**/coverage/**',
+    '!**/tests/**'
+  ],
+  coveragePathIgnorePatterns: [
+    '/tests/unit',
+    '/tests/e2e',
+    '.eslintrc.js',
+    'babel.config.js',
+    'jest.config.js',
+    'postcss.config.js',
+    '/src/config'
+  ]
 }

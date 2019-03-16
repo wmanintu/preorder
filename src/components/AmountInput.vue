@@ -1,8 +1,8 @@
 <template>
   <div class="input-container">
-    <el-button name="minus-button" :disabled="item.amount === 0" @click.prevent="handleAmountInput('minus')" icon="el-icon-minus" circle></el-button>
+    <el-button class="minus" :disabled="item.amount === 0" @click="handleAmountInput('minus')" icon="el-icon-minus" circle />
     <div :class="item.amount > 0 ? 'amount-text-blue' : 'amount-text'">{{item.amount}}</div>
-    <el-button class="plus-button" @click.prevent="handleAmountInput('add')" icon="el-icon-plus" circle></el-button>
+    <el-button class="plus-button" @click="handleAmountInput('add')" icon="el-icon-plus" circle />
   </div>
 </template>
 
