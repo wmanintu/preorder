@@ -92,11 +92,12 @@ const actions = {
             break
         }
         transaction.update(docRef, { amount: newConsumer })
+        console.log('consume amount:', newConsumer)
       })
     }).then(() => {
-      console.log('Transaction successfully committed!')
+      console.log('updateConsumer successfully committed!')
     }).catch((error) => {
-      console.log('Transaction failed: ', error)
+      console.error('Transaction failed: ', error)
     })
   }
 }
