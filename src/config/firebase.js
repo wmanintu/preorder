@@ -3,7 +3,7 @@ import 'firebase/firestore'
 import 'firebase/auth'
 
 var config = {
-  apiKey: 'AIzaSyAWnAZ0fkL7Tb7rd9m8SzYaSdjXp8hGau0',
+  apiKey: process.env.VUE_APP_API_KEY,
   authDomain: 'preorder-8a6e9.firebaseapp.com',
   databaseURL: 'https://preorder-8a6e9.firebaseio.com',
   projectId: 'preorder-8a6e9',
